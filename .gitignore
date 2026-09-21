@@ -1,0 +1,13 @@
+# data + engines live on workspace disk, never committed
+data/
+ext/
+*.onnx
+*.engine
+*.plan
+# python
+__pycache__/
+*.pyc
+.venv/
+# results: keep JSON, ignore bulky dumps
+results/*.png
+results/*.npy

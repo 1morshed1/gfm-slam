@@ -1,0 +1,20 @@
+# Baseline config — one file per quant config (§8 config axis).
+# Phase 1 reproduces this before any compression. Copy this file per config.
+name: fp16_baseline
+system: mast3r-slam          # mast3r-slam | vggt-slam (deferred)
+precision:
+  trunk: fp16                # ViT encoder/backbone
+  fusion: fp16               # fusion/attention blocks
+  heads: fp16                # pointmap / depth / camera-token / matching heads
+quant:
+  method: none               # none | gptq | awq | bnb | torchao | modelopt
+  weight_bits: 16
+  act_bits: 16
+  mixed_precision: false     # keep heads + first/last blocks high-precision (H1)
+calibration:
+  frames: 0                  # held-out, different scene than eval; log which
+eval:
+  datasets: [tum_fr1, euroc_mh01]
+  runs: 3                    # >=3, SLAM is nondeterministic
+  seed: 0
+device: rig                  # rig only (D1 = no deploy)
