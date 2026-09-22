@@ -1,0 +1,38 @@
+{
+  "exp_id": "20260922-phase1-euroc-v101-fp16-calib",
+  "timestamp": "2026-09-22T09:39:10+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/fp16_baseline.yaml",
+  "config_hash": "3ef0113f3c0f",
+  "seed": 0,
+  "dataset": "euroc_V1_01_easy",
+  "metrics": {
+    "ate_rmse_m": 0.039528,
+    "ate_mean_m": 0.03658,
+    "ate_median_m": 0.037633,
+    "align": "sim3",
+    "paper_euroc_avg_ate_m": 0.041,
+    "note": "single-seq spot check; full 11-seq EuRoC deferred"
+  },
+  "system": "mast3r-slam",
+  "config_slam": "ext/MASt3R-SLAM/config/eval_calib.yaml",
+  "use_calib": true,
+  "subsample": 2
+}

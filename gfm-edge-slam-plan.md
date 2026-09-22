@@ -2,11 +2,11 @@
 
 **Working title:** *Edge-GFM-SLAM: compressing the geometric backbone of feed-forward SLAM under an accuracy–latency–energy budget.*
 
-**Rig:** `vm-130-131` (see `hardware-office-vm-130-131.md`). Single Blackwell GPU (physical **GPU-1**, `sm_120`), CUDA 12.8 via torch wheels, SDPA-only, ~96 GiB VRAM, ~1.5 TiB free.
+**Rig:** `vm-130-131` (see `hardware-office-vm-130-131.md`). Single Blackwell GPU (physical **GPU-2**, `sm_120`), CUDA 12.8 via torch wheels, SDPA-only, ~96 GiB VRAM, ~1.5 TiB free.
 
 **Status:** DRAFT v0.1 — grounded against literature as of 2026-09-22. Read §0 and §1 before committing.
 
-**Decisions LOCKED (2026-09-22):** D1 = **no deploy for now** (rig-only Blackwell; Track B / Jetson deferred to a future Phase 3) · D2 = vision/geometry venue paper (3DV/WACV class), ~3 mo, method wrinkle required · D3 = **MASt3R-SLAM primary**, VGGT-SLAM large arm deferred · D4 = PTQ-first → pruning; distillation dropped · D5 = real-time = target, **Pareto frontier = contribution**. D1 pivots the wedge onto the §6.3 downstream-aware bit allocation. See `memory-bank/activeContext.md`.
+**Decisions LOCKED (2026-09-22):** D0 = **GPU-2** · D1 = **no deploy for now** (rig-only Blackwell; Track B / Jetson deferred to a future Phase 3) · D2 = vision/geometry venue paper (3DV/WACV class), ~3 mo, method wrinkle required · D3 = **MASt3R-SLAM primary**, VGGT-SLAM large arm deferred · D4 = PTQ-first → pruning; distillation dropped · D5 = real-time = target, **Pareto frontier = contribution**. D1 pivots the wedge onto the §6.3 downstream-aware bit allocation. See `memory-bank/activeContext.md`.
 
 ---
 
@@ -74,7 +74,7 @@ Validate that neither wrinkle is already published before you lean on it (see §
 
 **Two measurement tracks (this is the crux of the experimental design):**
 
-- **Track A — desktop accuracy (fast iteration, GPU-1).** PyTorch-side PTQ (bitsandbytes / GPTQ(Model) / AWQ / torchao / TensorRT-ModelOpt in fake-quant mode) to measure *accuracy* (ATE, pointmap) vs bit-width, per-layer sensitivity, mixed-precision configs. Cheap; single GPU is plenty.
+- **Track A — desktop accuracy (fast iteration, GPU-2).** PyTorch-side PTQ (bitsandbytes / GPTQ(Model) / AWQ / torchao / TensorRT-ModelOpt in fake-quant mode) to measure *accuracy* (ATE, pointmap) vs bit-width, per-layer sensitivity, mixed-precision configs. Cheap; single GPU is plenty.
 - **Track B — edge deployment (latency/energy, on Jetson).** Export GFM → ONNX → **TensorRT** engine (FP16/INT8/FP8/NVFP4 via TensorRT-ModelOpt calibration) → run inside the SLAM loop on the Jetson → measure latency, peak unified memory, and **energy/frame** (`tegrastats`/`jetson-stats`).
 
 **Track A ≠ Track B.** bitsandbytes/GPTQ kernels and calibration are *not* the same as TensorRT's. Weight-only results transfer reasonably; activation-quant results must be **re-validated for accuracy on the Jetson deployment**. RQ3 is exactly about this gap — make it a feature, not a bug.
@@ -87,10 +87,10 @@ Validate that neither wrinkle is already published before you lean on it (see §
 
 ### 4.1 Your rig (baked-in constraints from `hardware-office-vm-130-131.md`)
 
-- **Pin GPU-1 always:** `export CUDA_VISIBLE_DEVICES=1` (GPU-0/2 are shared — do not use). Merge/quantize/eval all on GPU-1.
+- **Pin GPU-2 always:** `export CUDA_VISIBLE_DEVICES=2` (do not use GPU-0/1 for this project). Merge/quantize/eval all on GPU-2.
 - **`sm_120` (Blackwell), CUDA 12.8, torch 2.11.0+cu128.** Verify capability `(12, 0)` before every EXP.
 - **SDPA only — no flash-attn.** Any attention-quant path must respect the SDPA code path; do not install flash-attn.
-- **Install landmine (same as your VLA work):** blind `pip install -e` on the SLAM repos may pull `torch==2.2.0` and break `sm_120`. Use `--no-deps`, then curated deps, then **re-verify cu128 + matmul on GPU-1**.
+- **Install landmine (same as your VLA work):** blind `pip install -e` on the SLAM repos may pull `torch==2.2.0` and break `sm_120`. Use `--no-deps`, then curated deps, then **re-verify cu128 + matmul on GPU-2**.
 - **Disk OK now** (~1.5 TiB free) but Docker holds ~200 GiB of other images — datasets (TartanAir/ScanNet are large) go under `/office/dev_workspace/morshed`, not root free space you assume is infinite.
 - **96 GiB VRAM is generous** — VGGT (1.2B) inference and even light QAT/distillation of the trunk fit comfortably single-GPU. Compute is *not* your bottleneck; **Jetson access + TensorRT export engineering is.**
 
@@ -107,7 +107,7 @@ Validate that neither wrinkle is already published before you lean on it (see §
 
 ### 4.3 Tooling risk gates (verify in Phase 0, before committing to a method)
 
-Check *on GPU-1* which of these actually build/run `sm_120` kernels **with real (not just fake) speedup**:
+Check *on GPU-2* which of these actually build/run `sm_120` kernels **with real (not just fake) speedup**:
 
 - `bitsandbytes` (INT8, NF4) — Blackwell kernel support has been catching up; log the exact version.
 - `GPTQModel` (maintained AutoGPTQ successor) / `AutoAWQ` — Marlin/Machete 4-bit kernels; verify sm_120.
@@ -158,7 +158,7 @@ Check *on GPU-1* which of these actually build/run `sm_120` kernels **with real 
 ## 6. Methods
 
 ### 6.1 Baselines (non-negotiable first)
-Reproduce the **FP16/BF16** baseline ATE + pointmap for MASt3R-SLAM (and VGGT-SLAM) on TUM + EuRoC on GPU-1, matching published numbers within a small tolerance. **If you can't reproduce baseline, no compression result is meaningful.** This is the Phase-1 gate.
+Reproduce the **FP16/BF16** baseline ATE + pointmap for MASt3R-SLAM (and VGGT-SLAM) on TUM + EuRoC on GPU-2, matching published numbers within a small tolerance. **If you can't reproduce baseline, no compression result is meaningful.** This is the Phase-1 gate.
 
 ### 6.2 PTQ ladder (weakest → strongest pressure)
 1. **W8 weight-only** (INT8) on ViT trunk, heads in FP16. Expect ~lossless.
@@ -191,15 +191,15 @@ Reproduce the **FP16/BF16** baseline ATE + pointmap for MASt3R-SLAM (and VGGT-SL
 Each phase has **entry** → **work** → **exit gate** → **deliverable**. Do not pass a gate on hope.
 
 ### Phase 0 — Bring-up & tooling gates (est. 3–5 days)
-- Clone MASt3R-SLAM (+ VGGT/VGGT-SLAM) into `~/vla`-style workspace; install with `--no-deps` + curated deps; **re-verify `sm_120` + matmul on GPU-1** (the torch==2.2 landmine).
+- Clone MASt3R-SLAM (+ VGGT/VGGT-SLAM) into `~/vla`-style workspace; install with `--no-deps` + curated deps; **re-verify `sm_120` + matmul on GPU-2** (the torch==2.2 landmine).
 - Stand up datasets (TUM, EuRoC first) under workspace disk.
 - Run the §4.3 tooling gates: which of bnb / GPTQModel / AWQ / torchao / TensorRT-ModelOpt actually run on `sm_120`.
-- **Exit gate:** GFM forward runs on GPU-1 at expected FP16 speed; ≥2 viable quant toolchains confirmed; datasets load.
+- **Exit gate:** GFM forward runs on GPU-2 at expected FP16 speed; ≥2 viable quant toolchains confirmed; datasets load.
 - **Deliverable:** `phase0_bringup.sh` (gated, like your existing pattern) + a tooling-support matrix note.
 
 ### Phase 1 — Baseline reproduction (est. 3–5 days)
 - Reproduce FP16 ATE (TUM+EuRoC) and pointmap (Replica/7-Scenes) for the primary system; log versions/seeds.
-- **Exit gate:** baseline ATE within tolerance of published numbers on GPU-1.
+- **Exit gate:** baseline ATE within tolerance of published numbers on GPU-2.
 - **Deliverable:** baseline results table + `EXP` log entries.
 
 ### Phase 2 — Desktop PTQ accuracy sweep, Track A (est. 1.5–2 weeks)
@@ -235,7 +235,7 @@ Config axis × dataset axis × metric axis:
 - **Configs:** FP16 (baseline) · W8 · W4 · W8A8 · FP8 · NVFP4/W4A4 · +mixed-precision-heads · +downstream-aware-alloc · +asym-precision · +pruned · +distilled.
 - **Systems:** MASt3R-SLAM (primary) · VGGT/VGGT-SLAM (large arm).
 - **Datasets:** TUM · EuRoC · 7-Scenes · Replica · (ScanNet · TartanAir/KITTI stretch).
-- **Devices:** rig GPU-1 (accuracy + reference latency) · Jetson (latency + energy + on-device accuracy).
+- **Devices:** rig GPU-2 (accuracy + reference latency) · Jetson (latency + energy + on-device accuracy).
 - **Metrics:** ATE RMSE · RPE · tracking success · pointmap acc/comp · depth abs-rel/δ · latency (fwd + e2e) · peak mem · size · **J/frame**.
 
 Not every cell must be filled — prioritise: full config ladder on TUM+EuRoC (both devices), then breadth on remaining datasets for the shortlisted configs.
@@ -286,7 +286,7 @@ edge-gfm-slam/
     eval_ate.py, eval_pointmap.py, measure_energy.py
   configs/                 # one file per quant config
   results/                 # per-EXP JSON: versions, seeds, config, metrics
-  CLAUDE.md                # hard rules (GPU-1 pin, SDPA-only, --no-deps)
+  CLAUDE.md                # hard rules (GPU-2 pin, SDPA-only, --no-deps)
 ```
 
 **Log on every EXP (per your plan §7 habit):** driver / CUDA / torch / quant-lib versions, `CUDA_VISIBLE_DEVICES`, GPU capability `(12,0)`, seed, config hash, dataset+sequence, all metrics, and **which device** (rig vs Jetson). Energy runs must log power-sampling method + duration.
@@ -296,8 +296,8 @@ edge-gfm-slam/
 ## 12. First-week checklist (concrete, tailored to `vm-130-131`)
 
 ```bash
-# 0. Pin GPU-1, activate env (your standard preamble)
-export CUDA_VISIBLE_DEVICES=1
+# 0. Pin GPU-2, activate env (your standard preamble)
+export CUDA_VISIBLE_DEVICES=2
 eval "$(~/miniconda3/bin/conda shell.bash hook)"
 conda activate openvla   # or a fresh env: conda create -n edgeslam python=3.10
 
@@ -311,7 +311,7 @@ git clone https://github.com/rmurai0610/MASt3R-SLAM.git   # verify current URL
 # install curated deps, then:  pip install -e MASt3R-SLAM --no-deps
 # re-run step 1 to confirm sm_120 survived.
 
-# 3. Tooling gates on GPU-1 (log pass/fail + versions)
+# 3. Tooling gates on GPU-2 (log pass/fail + versions)
 python -c "import bitsandbytes as bnb; print('bnb', bnb.__version__)"
 pip show gptqmodel autoawq torchao nvidia-modelopt 2>/dev/null | grep -E 'Name|Version'
 
@@ -319,7 +319,7 @@ pip show gptqmodel autoawq torchao nvidia-modelopt 2>/dev/null | grep -E 'Name|V
 # 5. Baseline FP16 ATE on TUM fr1 -> first EXP log entry.
 ```
 
-**Week-1 exit:** baseline FP16 ATE on at least one TUM sequence reproduced on GPU-1, tooling-support matrix filled, D1/D2 answered.
+**Week-1 exit:** baseline FP16 ATE on at least one TUM sequence reproduced on GPU-2, tooling-support matrix filled, D1/D2 answered.
 
 ---
 

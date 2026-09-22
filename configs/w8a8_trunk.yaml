@@ -1,0 +1,21 @@
+# Phase-2: INT8 weight+activation on GFM trunk (enc+dec Linear).
+# Heads stay FP16. Dynamic per-token act fake-quant (Track A accuracy probe).
+name: w8a8_trunk
+system: mast3r-slam
+precision:
+  trunk: int8_w8a8
+  fusion: int8_w8a8
+  heads: fp16
+quant:
+  method: fake_w8a8
+  scope: trunk
+  weight_bits: 8
+  act_bits: 8
+  mixed_precision: true
+calibration:
+  frames: 0               # dynamic act quant; no static calib yet
+eval:
+  datasets: [tum_fr1_desk]
+  runs: 1
+  seed: 0
+device: rig

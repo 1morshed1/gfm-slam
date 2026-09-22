@@ -1,6 +1,7 @@
 # data + engines live on workspace disk, never committed
 data/
 ext/
+.cuda_home/
 *.onnx
 *.engine
 *.plan
@@ -11,3 +12,8 @@ __pycache__/
 # results: keep JSON, ignore bulky dumps
 results/*.png
 results/*.npy
+# checkpoints (large)
+**/checkpoints/*.pth
+**/checkpoints/*.pkl
+results/*_run.log
+results/*_full_run.log

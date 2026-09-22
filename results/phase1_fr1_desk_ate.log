@@ -1,0 +1,12 @@
+[93mInitialized new /office/dev_workspace/morshed/.evo/settings.json[39m
+APE w.r.t. translation part (m)
+(with Sim(3) Umeyama alignment)
+
+       max	0.026577
+      mean	0.014159
+    median	0.012466
+       min	0.002336
+      rmse	0.016127
+       sse	0.003641
+       std	0.007721
+

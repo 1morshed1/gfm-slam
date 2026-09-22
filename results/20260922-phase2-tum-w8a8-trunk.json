@@ -1,0 +1,65 @@
+{
+  "exp_id": "20260922-phase2-tum-w8a8-trunk",
+  "timestamp": "2026-09-22T11:22:17+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/w8a8_trunk.yaml",
+  "config_hash": "17c2e1f344e6",
+  "seed": 0,
+  "dataset": "tum_fr1_all",
+  "metrics": {
+    "ate_rmse_per_seq_m": {
+      "rgbd_dataset_freiburg1_360": 0.046922,
+      "rgbd_dataset_freiburg1_desk": 0.015991,
+      "rgbd_dataset_freiburg1_desk2": 0.025485,
+      "rgbd_dataset_freiburg1_floor": 0.027443,
+      "rgbd_dataset_freiburg1_plant": 0.016577,
+      "rgbd_dataset_freiburg1_room": 0.07106,
+      "rgbd_dataset_freiburg1_rpy": 0.022301,
+      "rgbd_dataset_freiburg1_teddy": 0.049439,
+      "rgbd_dataset_freiburg1_xyz": 0.008709
+    },
+    "ate_rmse_mean_m": 0.03154744444444445,
+    "fp16_ate_per_seq_m": {
+      "rgbd_dataset_freiburg1_360": 0.048152,
+      "rgbd_dataset_freiburg1_desk": 0.016127,
+      "rgbd_dataset_freiburg1_desk2": 0.023523,
+      "rgbd_dataset_freiburg1_floor": 0.024977,
+      "rgbd_dataset_freiburg1_plant": 0.019573,
+      "rgbd_dataset_freiburg1_room": 0.06124,
+      "rgbd_dataset_freiburg1_rpy": 0.023064,
+      "rgbd_dataset_freiburg1_teddy": 0.040289,
+      "rgbd_dataset_freiburg1_xyz": 0.008898
+    },
+    "fp16_ate_mean_m": 0.029538111111111112,
+    "ate_rel_change_mean": 0.06802511256643964,
+    "gate_15pct_pass": true,
+    "align": "sim3",
+    "n_seqs": 9,
+    "logical_mb_approx": 1166.75,
+    "fp16_mb_approx": 2754.56
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_w8a8_per_channel_w_per_token_a",
+    "scope": "trunk",
+    "bits": 8,
+    "act_bits": 8
+  }
+}

@@ -1,0 +1,21 @@
+# Phase-2 first rung: INT8 weight-only on GFM trunk (enc+dec Linear).
+# Heads stay FP16. Back-end untouched.
+name: w8_trunk
+system: mast3r-slam
+precision:
+  trunk: int8_wo          # torchao Int8WeightOnlyConfig on Linear
+  fusion: int8_wo         # decoder Linears included in trunk scope
+  heads: fp16
+quant:
+  method: torchao_int8_wo
+  scope: trunk            # trunk | encoder
+  weight_bits: 8
+  act_bits: 16
+  mixed_precision: true
+calibration:
+  frames: 0               # weight-only: no activation calib
+eval:
+  datasets: [tum_fr1_desk]
+  runs: 1
+  seed: 0
+device: rig

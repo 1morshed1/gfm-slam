@@ -1,0 +1,44 @@
+{
+  "exp_id": "20260922-phase1-fr1desk-fp16-r0",
+  "timestamp": "2026-09-22T06:57:21+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/fp16_baseline.yaml",
+  "config_hash": "3ef0113f3c0f",
+  "seed": 0,
+  "dataset": "tum_fr1_desk",
+  "metrics": {
+    "ate_rmse_m": 0.016127,
+    "ate_mean_m": 0.014159,
+    "ate_median_m": 0.012466,
+    "ate_std_m": 0.007721,
+    "ate_max_m": 0.026577,
+    "align": "sim3",
+    "n_est_poses": 14,
+    "n_rgb_frames": 613,
+    "tracking_success_approx": null
+  },
+  "system": "mast3r-slam",
+  "config_slam": "ext/MASt3R-SLAM/config/eval_calib.yaml",
+  "use_calib": true,
+  "subsample": 2,
+  "save_as": "tum/calib/rgbd_dataset_freiburg1_desk",
+  "traj_path": "ext/MASt3R-SLAM/logs/tum/calib/rgbd_dataset_freiburg1_desk/rgbd_dataset_freiburg1_desk.txt",
+  "fps_approx": 3.15
+}

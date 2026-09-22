@@ -13,7 +13,7 @@ Phase 0 (bring-up) — not started. Rig-only (D1 = no deploy). See activeContext
 ## Layout
 
 ```
-CLAUDE.md               hard rules (GPU-1 pin, sm_120 verify, --no-deps, SDPA, scope)
+CLAUDE.md               hard rules (GPU-2 pin, sm_120 verify, --no-deps, SDPA, scope)
 gfm-edge-slam-plan.md   full research plan
 memory-bank/            techContext (rig+tooling) · activeContext (phase/gates) · novelty (scoop watch)
 scripts/                phase0_bringup.sh · explog.py · eval_ate/eval_pointmap/measure_energy · export_onnx/build_trt (deferred)
@@ -24,7 +24,7 @@ results/                per-EXP JSON (versions, seed, config hash, metrics, devi
 ## Quickstart (on the rig)
 
 ```bash
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2
 bash scripts/phase0_bringup.sh   # verify Blackwell -> clone --no-deps -> re-verify -> probe quant libs
 ```
 

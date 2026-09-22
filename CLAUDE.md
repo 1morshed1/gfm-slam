@@ -5,7 +5,7 @@ violating them breaks the environment (torch downgrade) or invalidates results.
 
 ## Hardware pin (NON-NEGOTIABLE)
 
-- **Always pin GPU-1:** `export CUDA_VISIBLE_DEVICES=1`. GPU-0 and GPU-2 are shared — never use.
+- **Always pin GPU-2:** `export CUDA_VISIBLE_DEVICES=2`. (Decision 2026-09-22: use GPU-2 for this project; do not use GPU-0/1.)
 - **Verify Blackwell before every experiment:**
   ```bash
   python -c "import torch; print(torch.__version__, torch.cuda.get_device_capability(0), torch.cuda.get_device_name(0))"
@@ -17,7 +17,7 @@ violating them breaks the environment (torch downgrade) or invalidates results.
 
 - Blind `pip install -e <slam-repo>` may pull `torch==2.2.0` and destroy `sm_120` support.
 - **Always:** `pip install -e <repo> --no-deps`, then install curated deps by hand, then
-  **re-run the Blackwell verify above** to confirm cu128 + a real matmul on GPU-1 survived.
+  **re-run the Blackwell verify above** to confirm cu128 + a real matmul on GPU-2 survived.
 
 ## Attention
 
@@ -44,5 +44,5 @@ and device (`rig` for now). Energy runs also log power-sampling method + duratio
 
 ## Locked decisions (2026-09-22)
 
-- D1 no deploy · D2 vision/geometry venue paper · D3 MASt3R-SLAM primary
+- D0 GPU-2 pin · D1 no deploy · D2 vision/geometry venue paper · D3 MASt3R-SLAM primary
 - D4 PTQ-first → pruning → (distillation dropped) · D5 real-time=target, Pareto=contribution
