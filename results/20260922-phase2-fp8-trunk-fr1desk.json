@@ -1,0 +1,44 @@
+{
+  "exp_id": "20260922-phase2-fp8-trunk-fr1desk",
+  "timestamp": "2026-09-22T13:09:35+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/fp8_trunk.yaml",
+  "config_hash": "cd39b2d05330",
+  "seed": 0,
+  "dataset": "tum_fr1_desk",
+  "metrics": {
+    "ate_rmse_m": 0.016855,
+    "ate_mean_m": 0.015065,
+    "fp16_baseline_ate_rmse_m": 0.016127,
+    "ate_rel_change": 0.04514168785266941,
+    "align": "sim3",
+    "compression_weight_ratio": 2.3608827940861365
+  },
+  "system": "mast3r-slam",
+  "config_slam": "ext/MASt3R-SLAM/config/eval_calib.yaml",
+  "quant": {
+    "method": "fake_fp8_e4m3_per_channel_w_per_token_a",
+    "scope": "trunk",
+    "dtype": "float8_e4m3fn",
+    "n_linears_quantized": 289,
+    "logical_mb": 1166.75,
+    "fp16_mb": 2754.56
+  }
+}

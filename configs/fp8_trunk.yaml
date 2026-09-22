@@ -1,0 +1,21 @@
+# Phase-2: FP8-e4m3 weight+activation on GFM trunk (enc+dec Linear).
+# Heads stay FP16. Fake scaled cast (Track A accuracy; not TE kernels).
+name: fp8_trunk
+system: mast3r-slam
+precision:
+  trunk: fp8_e4m3
+  fusion: fp8_e4m3
+  heads: fp16
+quant:
+  method: fake_fp8_e4m3
+  scope: trunk
+  weight_bits: 8
+  act_bits: 8
+  mixed_precision: true
+calibration:
+  frames: 0
+eval:
+  datasets: [tum_fr1_desk]
+  runs: 1
+  seed: 0
+device: rig

@@ -1,0 +1,66 @@
+{
+  "exp_id": "20260922-phase2-tum-fp8-trunk",
+  "timestamp": "2026-09-22T13:49:39+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/fp8_trunk.yaml",
+  "config_hash": "cd39b2d05330",
+  "seed": 0,
+  "dataset": "tum_fr1_all",
+  "metrics": {
+    "ate_rmse_per_seq_m": {
+      "rgbd_dataset_freiburg1_360": 0.046665,
+      "rgbd_dataset_freiburg1_desk": 0.016855,
+      "rgbd_dataset_freiburg1_desk2": 0.025547,
+      "rgbd_dataset_freiburg1_floor": 0.026921,
+      "rgbd_dataset_freiburg1_plant": 0.018448,
+      "rgbd_dataset_freiburg1_room": 0.057536,
+      "rgbd_dataset_freiburg1_rpy": 0.021636,
+      "rgbd_dataset_freiburg1_teddy": 0.042872,
+      "rgbd_dataset_freiburg1_xyz": 0.008236
+    },
+    "ate_rmse_mean_m": 0.02941288888888889,
+    "fp16_ate_per_seq_m": {
+      "rgbd_dataset_freiburg1_360": 0.048152,
+      "rgbd_dataset_freiburg1_desk": 0.016127,
+      "rgbd_dataset_freiburg1_desk2": 0.023523,
+      "rgbd_dataset_freiburg1_floor": 0.024977,
+      "rgbd_dataset_freiburg1_plant": 0.019573,
+      "rgbd_dataset_freiburg1_room": 0.06124,
+      "rgbd_dataset_freiburg1_rpy": 0.023064,
+      "rgbd_dataset_freiburg1_teddy": 0.040289,
+      "rgbd_dataset_freiburg1_xyz": 0.008898
+    },
+    "fp16_ate_mean_m": 0.029538111111111112,
+    "ate_rel_change_mean": -0.004239344274628217,
+    "gate_15pct_pass": true,
+    "align": "sim3",
+    "n_seqs": 9,
+    "logical_mb_approx": 1166.75,
+    "fp16_mb_approx": 2754.56
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_fp8_e4m3_per_channel_w_per_token_a",
+    "scope": "trunk",
+    "dtype": "float8_e4m3fn",
+    "bits": 8,
+    "act_bits": 8
+  }
+}

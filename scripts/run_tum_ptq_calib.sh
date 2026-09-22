@@ -1,21 +1,30 @@
 #!/usr/bin/env bash
-# Full TUM fr1 calib with fake int PTQ.
+# Full TUM fr1 calib with fake PTQ.
 # Usage:
 #   bash scripts/run_tum_ptq_calib.sh 4 trunk        # weight-only W4
 #   bash scripts/run_tum_ptq_calib.sh 8 trunk 8      # W8A8
+#   bash scripts/run_tum_ptq_calib.sh fp8 trunk      # FP8-e4m3 W+A
 set -eo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 EXT="$ROOT/ext/MASt3R-SLAM"
 RESULTS="$ROOT/results"
 mkdir -p "$RESULTS"
 
-BITS="${1:-4}"
+MODE="${1:-4}"
 SCOPE="${2:-trunk}"
-ACT_BITS="${3:-}"   # empty → weight-only; 8 → W8A8
-if [ -n "$ACT_BITS" ]; then
-  TAG="w${BITS}a${ACT_BITS}_${SCOPE}"
+ACT_BITS="${3:-}"   # empty → weight-only; 8 → W8A8 (ignored for fp8)
+if [ "$MODE" = "fp8" ]; then
+  TAG="fp8_${SCOPE}"
+  PTQ_METHOD="fake_fp8"
+  BITS=8
 else
-  TAG="w${BITS}_${SCOPE}"
+  BITS="$MODE"
+  PTQ_METHOD="fake"
+  if [ -n "$ACT_BITS" ]; then
+    TAG="w${BITS}a${ACT_BITS}_${SCOPE}"
+  else
+    TAG="w${BITS}_${SCOPE}"
+  fi
 fi
 ATE_FILE="$RESULTS/phase2_tum_${TAG}_ates.txt"
 : > "$ATE_FILE"
@@ -32,7 +41,7 @@ set -u
 
 cd "$EXT"
 python -c "import torch; print(torch.__version__, torch.cuda.get_device_capability(0))"
-echo "TAG=$TAG BITS=$BITS ACT_BITS=${ACT_BITS:-wo} SCOPE=$SCOPE"
+echo "TAG=$TAG METHOD=$PTQ_METHOD BITS=$BITS ACT_BITS=${ACT_BITS:-wo} SCOPE=$SCOPE"
 
 datasets=(
   rgbd_dataset_freiburg1_360
@@ -60,9 +69,10 @@ for dataset in "${datasets[@]}"; do
 import sys
 sys.path.insert(0, "$ROOT/scripts")
 from ptq import patch_load_mast3r
+method = "$PTQ_METHOD"
+kwargs = dict(scope="$SCOPE", method=method, bits=int("$BITS"))
 act = "${ACT_BITS}"
-kwargs = dict(scope="$SCOPE", method="fake", bits=int("$BITS"))
-if act:
+if method == "fake" and act:
     kwargs["act_bits"] = int(act)
 patch_load_mast3r(**kwargs)
 import runpy
