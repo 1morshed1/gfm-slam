@@ -28,25 +28,28 @@ held fixed for a clean ablation.
 ## 1. Introduction
 - Feed-forward / GFM-based SLAM: what it is, why the trunk is the cost center.
 - Compression is standard for LLMs/ViTs but the *objective* is transplanted blindly to geometry tasks.
-- **Thesis:** the compression objective should be the SLAM metric, measured, not proxied.
-- **Contributions:**
-  1. Full-SLAM-loop compression study on commodity Blackwell — ATE/RPE + pointmap vs latency/peak-mem/energy Pareto, back-end fixed. *(status: accuracy done; latency/energy PENDING — see §7 gap)*
-  2. **SLAM-aware mixed-precision bit allocation** — bits assigned by measured ATE/pointmap sensitivity (§4.3). **Primary novelty.**
-  3. Empirical head-to-head: geometry-sensitivity allocator vs magnitude proxy vs uniform, at matched bit budget (H3).
+- **Thesis:** the compression objective should be the *closed-loop* SLAM metric, measured, not proxied.
+- **Contributions** (reframed 2026-09-23 after scoop-watch — task-aware MP for GFMs already exists, so we lead on the SLAM loop + allocator, not on "downstream-aware is new"):
+  1. **Closed-SLAM-loop metric as the sensitivity signal** — bits allocated by measured **ATE/pointmap** with the classical back-end held **fixed FP32**. Prior GFM quant (QVGGT) stops at the forward-pass pose head and never closes the loop. **Primary wedge.**
+  2. **Algorithmic allocator at matched budget** — greedy/ILP (§4.3) with a **head-to-head vs magnitude proxy and uniform** at equal K (H3); prior work hand-picks fragile blocks heuristically.
+  3. Full-SLAM compression study on commodity Blackwell (MASt3R-SLAM): ATE/RPE + pointmap vs latency/peak-mem/energy Pareto. *(accuracy done; latency/energy PENDING — see §6.5 gap)*
 
-**RISK (novelty.md R5):** must confirm contribution #2 is not already published. See §2. **Blocking for submission.**
+**RISK (novelty.md R5): PARTIALLY SCOOPED.** QVGGT (2605.31124) and Mix-QVLA (2606.19565) already do task-aware mixed-precision. Distinction now rests on the three points above; do NOT claim downstream-aware allocation itself is new. See §2.
 
 ---
 
 ## 2. Related Work
-<!-- Source: memory-bank/novelty.md. Verify all dates/claims before citing. -->
-- **FM quantization for 3D vision:** VersaQ-3D (2601.20317, W4A4 VGGT, custom accel, reconstruction-only), VGGT-X (2509.25191, memory-efficient bf16).
-- **Token reduction:** Co-Me (2511.14751, confidence-guided token merging) — cite as baseline, orthogonal sub-corner.
-- **Efficient stereo/geometry FMs:** Fast-FoundationStereo (2512.11130, KD+NAS+pruning) — method template, different task.
-- **Quantization sensitivity / mixed precision (general):** HAWQ-style Hessian, GPTQ, AWQ — contrast: proxy objective vs our measured-downstream objective.
-- **Distinction paragraph:** none of the above optimize/report *full-SLAM ATE* under compression with a fixed classical back-end.
+<!-- Source: memory-bank/novelty.md (scoop-watch 2026-09-23). Verify all dates/claims before citing. -->
+- **Task-aware MP for geometry FMs (closest prior — MUST engage head-on):**
+  - **QVGGT** (2605.31124): PTQ W4A16 for VGGT; per-block sensitivity via downstream pose-head accuracy (AUC@30); keeps fragile blocks FP16. *Our distinction:* closes the full SLAM loop and reports ATE with a fixed FP32 back-end; uses an algorithmic (greedy/ILP) allocator with a matched-budget proxy ablation, vs QVGGT's hand-picked blocks.
+  - **Mix-QVLA** (2606.19565): task-evidence-aware MP for VLA models — same philosophy, robotics domain. Cite as prior that task-aware > proxy.
+- **GFM PTQ methods (baselines):** Quantized VGGT (2509.21302, ICLR'26; activation heavy-tails/calibration), VersaQ-3D (2601.20317, W4A4 VGGT + transform coding, reconstruction-only), VGGT-X (2509.25191, memory-efficient bf16).
+- **Token/frame reduction (orthogonal efficiency):** Co-Me (2511.14751, confidence-guided token merging), LeanGate (2604.08718, feed-forward frame gating, 5×). Complementary — combinable with our quant, not competing.
+- **Proxy-based MP (the thing we argue against):** MXSens (2607.17733, Hessian-guided), HAWQ-style, GPTQ, AWQ — contrast surrogate/Hessian objective vs measured closed-loop objective.
+- **Distillation:** GFM distillation (2607.01851) — dropped (D4).
+- **Distinction paragraph:** none optimize or report *full-SLAM ATE* under compression with a fixed classical back-end via an algorithmic downstream allocator.
 
-**TODO:** dedicated scoop-watch pass right before submission; log dated entries in novelty.md.
+**TODO:** re-run scoop-watch pre-submission (field moves monthly); keep novelty.md current.
 
 ---
 
@@ -152,7 +155,7 @@ held fixed for a clean ablation.
 ---
 
 ## Submission blockers (track to zero)
-1. [ ] Novelty verification — confirm SLAM-aware allocation unpublished (§2).
+1. [~] Novelty verification — DONE 2026-09-23: partially scooped (QVGGT, Mix-QVLA). Wedge reframed to closed-loop-ATE + fixed back-end + algorithmic allocator (§1, §2). Re-run pre-submission.
 2. [ ] Latency/energy measurements — close speedup gate, fill §6.5 Pareto.
 3. [ ] Budget sweep over K (not just K=7) for a real Pareto curve.
 4. [ ] More EuRoC sequences (transfer claim rests on 1 seq).
