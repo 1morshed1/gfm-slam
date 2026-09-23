@@ -1,6 +1,6 @@
 # activeContext — current phase, gate status, next action
 
-**As of:** 2026-09-23 (§6.3 δ>3% protect ablation done)
+**As of:** 2026-09-23 (Phase 4 H3 ablation done)
 
 ## Locked decisions
 
@@ -15,31 +15,38 @@
 
 ## Current phase
 
-**§6.3 allocation ablations complete (Track A).** Geometry-aware protect improves on uniform W4; stronger threshold helps further.
+**Phase 4 H3 claim supported.** Matched-K=7 protect: geometry-greedy beats weight-magnitude proxy on full TUM.
 
-### Full TUM fr1 mean
+### Full TUM fr1 mean (W4 except protect)
 
-| config | mean ATE | vs FP16 | vs uniform W4 |
-|--------|----------|---------|---------------|
-| FP8 e4m3 | 0.0294 m | −0.4% | — |
-| FP16 | 0.0295 m | — | — |
-| W8A8 | 0.0315 m | +6.8% | — |
-| **W4 sens-protect δ>3%** | **0.0316 m** | **+7.1%** ✓ | **−5.1%** |
-| W4 sens-protect (dec2.8 only) | 0.0324 m | +9.6% ✓ | −2.8% |
-| W4 uniform trunk | 0.0333 m | +12.8% ✓ | — |
+| allocator | mean ATE | vs FP16 | vs uniform W4 |
+|-----------|----------|---------|---------------|
+| **Geometry greedy K=7** | **0.0316 m** | **+7.1%** | **−5.1%** |
+| Magnitude L1 K=7 | 0.0328 m | +10.9% | −1.7% |
+| Uniform W4 trunk | 0.0333 m | +12.8% | — |
 
-δ>3% also cuts teddy pain (+28% vs +46% for single-block).  
-EXP: `results/20260923-phase2-tum-w4-sens-protect-d3.json`
+Geometry wins by **3.6% abs mean ATE** vs magnitude at equal unit budget.  
+EXPs: `…-tum-w4-sens-protect-d3.json`, `…-phase4-tum-w4-mag-protect-k7.json`  
+Allocator: `scripts/allocate_bits.py`
+
+### Track-A shortlist
+
+| config | mean vs FP16 |
+|--------|----------------|
+| FP8 e4m3 | −0.4% |
+| W8A8 | +6.8% |
+| W4 geometry-protect K=7 | +7.1% |
+| W4 magnitude-protect K=7 | +10.9% |
+| W4 uniform | +12.8% |
 
 ## Next action
 
-1. **Phase 4 ablation in progress:** magnitude-proxy K=7 full TUM (`w4_mag_protect_k7`) vs geometry greedy K=7 (= δ>3%, already +7.1%).
-2. Allocator code: `scripts/allocate_bits.py` (greedy / magnitude / ILP).
-3. After result: freeze H3 table; paper shortlist FP8 + W4-greedy.
+1. Commit/push magnitude TUM EXP + ates.
+2. Paper tables / sensitivity heatmap; optional EuRoC on FP8 + W4-greedy.
+3. Stretch: prune or W4A4.
 
 ## Gate ledger
 
-- [x] Phase 0–1
-- [x] Phase 2 uniform PTQ ladder
-- [x] Phase 2 §6.3 sensitivity + protect ablations
-- [ ] Phase 4: allocator vs magnitude proxy (TUM running)
+- [x] Phase 0–2 PTQ ladder + §6.3 sensitivity
+- [x] Phase 4: geometry allocator vs magnitude proxy (H3 ✓)
+- [ ] Paper writeup / EuRoC shortlist
