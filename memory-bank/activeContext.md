@@ -33,13 +33,13 @@ EXP: `results/20260923-phase2-tum-w4-sens-protect-d3.json`
 
 ## Next action
 
-1. **Commit/push** §6.3 batch (sensitivity + both protect ablations).
-2. Phase 4: formal greedy/ILP allocator; or shortlist FP8 + W4-d3 for paper tables.
-3. Stretch: W4A4 / prune.
+1. **Phase 4 ablation in progress:** magnitude-proxy K=7 full TUM (`w4_mag_protect_k7`) vs geometry greedy K=7 (= δ>3%, already +7.1%).
+2. Allocator code: `scripts/allocate_bits.py` (greedy / magnitude / ILP).
+3. After result: freeze H3 table; paper shortlist FP8 + W4-greedy.
 
 ## Gate ledger
 
 - [x] Phase 0–1
 - [x] Phase 2 uniform PTQ ladder
-- [x] Phase 2 §6.3 sensitivity + protect ablations (δ>5% and δ>3%; both beat uniform W4)
-- [ ] Phase 4: fuller allocator + writeup
+- [x] Phase 2 §6.3 sensitivity + protect ablations
+- [ ] Phase 4: allocator vs magnitude proxy (TUM running)

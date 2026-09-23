@@ -1,0 +1,26 @@
+{
+  "method": "magnitude",
+  "score": "weight_l1",
+  "k": 7,
+  "trunk_protect": [
+    "enc_blocks.22",
+    "enc_blocks.23",
+    "enc_blocks.18",
+    "enc_blocks.20",
+    "enc_blocks.19",
+    "enc_blocks.21",
+    "enc_blocks.17"
+  ],
+  "protect": [
+    "downstream_head1",
+    "downstream_head2",
+    "enc_blocks.17",
+    "enc_blocks.18",
+    "enc_blocks.19",
+    "enc_blocks.20",
+    "enc_blocks.21",
+    "enc_blocks.22",
+    "enc_blocks.23"
+  ],
+  "sens_path": "/office/dev_workspace/morshed/projects/gfm-slam/results/20260923-phase2-sens-w4-full-fr1desk.json"
+}

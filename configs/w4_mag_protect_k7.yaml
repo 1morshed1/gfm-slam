@@ -1,0 +1,27 @@
+# Phase-4 ablation: protect top-K=7 trunk units by weight L1 (LLM-style proxy).
+# Matched unit budget vs geometry greedy / δ>3% protect.
+name: w4_mag_protect_k7
+system: mast3r-slam
+precision:
+  trunk: int4_wo_except_protect
+  heads: fp16
+  protect:
+    - enc_blocks.17
+    - enc_blocks.18
+    - enc_blocks.19
+    - enc_blocks.20
+    - enc_blocks.21
+    - enc_blocks.22
+    - enc_blocks.23
+    - downstream_head1
+    - downstream_head2
+quant:
+  method: fake_except
+  weight_bits: 4
+  allocator: magnitude_l1
+  k: 7
+eval:
+  datasets: [tum_fr1_all]
+  runs: 1
+  seed: 0
+device: rig
