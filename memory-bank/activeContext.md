@@ -1,6 +1,6 @@
 # activeContext — current phase, gate status, next action
 
-**As of:** 2026-09-22 (Phase 2 FP8 full TUM confirmed)
+**As of:** 2026-09-23 (§6.3 δ>3% protect ablation done)
 
 ## Locked decisions
 
@@ -15,31 +15,31 @@
 
 ## Current phase
 
-**Phase 2 — PTQ ladder (Track A).** Three configs clear the ≤15% mean-ATE gate on full TUM fr1. **FP8-e4m3 is best** (slightly *better* than FP16 mean).
+**§6.3 allocation ablations complete (Track A).** Geometry-aware protect improves on uniform W4; stronger threshold helps further.
 
-### TUM fr1 mean (calib, subsample 2)
+### Full TUM fr1 mean
 
-| config | mean ATE | vs our FP16 |
-|--------|----------|-------------|
-| **FP8 e4m3 trunk** | **0.0294 m** | **−0.4%** ✓ |
-| FP16 | 0.0295 m | — |
-| W8A8 trunk | 0.0315 m | +6.8% ✓ |
-| W4 trunk (fake WO) | 0.0333 m | +12.8% ✓ |
+| config | mean ATE | vs FP16 | vs uniform W4 |
+|--------|----------|---------|---------------|
+| FP8 e4m3 | 0.0294 m | −0.4% | — |
+| FP16 | 0.0295 m | — | — |
+| W8A8 | 0.0315 m | +6.8% | — |
+| **W4 sens-protect δ>3%** | **0.0316 m** | **+7.1%** ✓ | **−5.1%** |
+| W4 sens-protect (dec2.8 only) | 0.0324 m | +9.6% ✓ | −2.8% |
+| W4 uniform trunk | 0.0333 m | +12.8% ✓ | — |
 
-FP8 worst: desk2 +8.6%, teddy +6.4%; several seqs improve (room −6%, xyz −7%).  
-EXP: `results/20260922-phase2-tum-fp8-trunk.json`  
-Runner: `scripts/run_tum_ptq_calib.sh fp8 trunk`
+δ>3% also cuts teddy pain (+28% vs +46% for single-block).  
+EXP: `results/20260923-phase2-tum-w4-sens-protect-d3.json`
 
 ## Next action
 
-1. **§6.3** sensitivity / mixed-precision heads (method wrinkle) — enough Pareto points to allocate against.
-2. Or shortlist + prune ladder.
-3. Stretch: W4A4 (expect head breakage per H1).
+1. **Commit/push** §6.3 batch (sensitivity + both protect ablations).
+2. Phase 4: formal greedy/ILP allocator; or shortlist FP8 + W4-d3 for paper tables.
+3. Stretch: W4A4 / prune.
 
 ## Gate ledger
 
 - [x] Phase 0–1
-- [x] Phase 2: ≥1 compressed config ≤15% ATE (**FP8** −0.4%, **W8A8** +6.8%, **W4** +12.8%)
-- [x] Phase 2: W8A8 + FP8 desk and full TUM
-- [ ] Phase 2 shortlist / §6.3
-- [ ] Phase 4: SLAM-aware bit allocation
+- [x] Phase 2 uniform PTQ ladder
+- [x] Phase 2 §6.3 sensitivity + protect ablations (δ>5% and δ>3%; both beat uniform W4)
+- [ ] Phase 4: fuller allocator + writeup

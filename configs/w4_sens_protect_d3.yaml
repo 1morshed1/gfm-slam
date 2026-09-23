@@ -1,0 +1,26 @@
+# §6.3: W4 WO except units with desk leave-one ΔATE > 3% (+ heads always).
+name: w4_sens_protect_d3
+system: mast3r-slam
+precision:
+  trunk: int4_wo_except_protect
+  heads: fp16
+  protect:
+    - dec_blocks2.8
+    - enc_blocks.19
+    - enc_blocks.22
+    - enc_blocks.9
+    - enc_blocks.7
+    - enc_blocks.0
+    - enc_blocks.14
+    - downstream_head1
+    - downstream_head2
+quant:
+  method: fake_except
+  weight_bits: 4
+  act_bits: 16
+  protect_threshold_desk: 0.03
+eval:
+  datasets: [tum_fr1_all]
+  runs: 1
+  seed: 0
+device: rig

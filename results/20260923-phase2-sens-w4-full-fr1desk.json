@@ -1,0 +1,185 @@
+{
+  "exp_id": "20260923-phase2-sens-w4-full-fr1desk",
+  "timestamp": "2026-09-23T04:58:15+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "tum_fr1_desk",
+  "metrics": {
+    "fp16_baseline_ate_rmse_m": 0.016127,
+    "ate_rmse_per_unit_m": {
+      "dec_blocks.0": 0.01625,
+      "dec_blocks.1": 0.016394,
+      "dec_blocks.2": 0.016332,
+      "dec_blocks.3": 0.016042,
+      "dec_blocks.4": 0.016117,
+      "dec_blocks.5": 0.016224,
+      "dec_blocks.6": 0.016475,
+      "dec_blocks.7": 0.016102,
+      "dec_blocks.8": 0.016548,
+      "dec_blocks.9": 0.016077,
+      "dec_blocks.10": 0.016095,
+      "dec_blocks.11": 0.016192,
+      "dec_blocks2.0": 0.016083,
+      "dec_blocks2.1": 0.01569,
+      "dec_blocks2.2": 0.016036,
+      "dec_blocks2.3": 0.01661,
+      "dec_blocks2.4": 0.015688,
+      "dec_blocks2.5": 0.016205,
+      "dec_blocks2.6": 0.016158,
+      "dec_blocks2.7": 0.01639,
+      "dec_blocks2.8": 0.020298,
+      "dec_blocks2.9": 0.016144,
+      "dec_blocks2.10": 0.016052,
+      "dec_blocks2.11": 0.015905,
+      "decoder_embed": 0.015976,
+      "downstream_head1": 0.020791,
+      "downstream_head2": 0.019518,
+      "enc_blocks.0": 0.016662,
+      "enc_blocks.1": 0.016498,
+      "enc_blocks.2": 0.016152,
+      "enc_blocks.3": 0.016276,
+      "enc_blocks.4": 0.01656,
+      "enc_blocks.5": 0.016102,
+      "enc_blocks.6": 0.016141,
+      "enc_blocks.7": 0.016716,
+      "enc_blocks.8": 0.016108,
+      "enc_blocks.9": 0.01683,
+      "enc_blocks.10": 0.016477,
+      "enc_blocks.11": 0.016245,
+      "enc_blocks.12": 0.016603,
+      "enc_blocks.13": 0.016278,
+      "enc_blocks.14": 0.016643,
+      "enc_blocks.15": 0.016422,
+      "enc_blocks.16": 0.015881,
+      "enc_blocks.17": 0.01626,
+      "enc_blocks.18": 0.016204,
+      "enc_blocks.19": 0.01692,
+      "enc_blocks.20": 0.016075,
+      "enc_blocks.21": 0.016199,
+      "enc_blocks.22": 0.01688,
+      "enc_blocks.23": 0.016167
+    },
+    "ate_rel_delta_per_unit": {
+      "dec_blocks.0": 0.007626960997085731,
+      "dec_blocks.1": 0.016556086066844417,
+      "dec_blocks.2": 0.012711601661809409,
+      "dec_blocks.3": -0.005270664103676956,
+      "dec_blocks.4": -0.0006200781298443352,
+      "dec_blocks.5": 0.006014757859490288,
+      "dec_blocks.6": 0.02157871891858381,
+      "dec_blocks.7": -0.0015501953246107303,
+      "dec_blocks.8": 0.02610528926644765,
+      "dec_blocks.9": -0.0031003906492216757,
+      "dec_blocks.10": -0.0019842500155017864,
+      "dec_blocks.11": 0.0040305078439885015,
+      "dec_blocks2.0": -0.002728343771315118,
+      "dec_blocks2.1": -0.027097414274198543,
+      "dec_blocks2.2": -0.0056427109815835146,
+      "dec_blocks2.3": 0.029949773671482657,
+      "dec_blocks2.4": -0.027221429900167324,
+      "dec_blocks2.5": 0.004836609412786116,
+      "dec_blocks2.6": 0.0019222422025175036,
+      "dec_blocks2.7": 0.016308054814906638,
+      "dec_blocks2.8": 0.2586345879580828,
+      "dec_blocks2.9": 0.0010541328207353913,
+      "dec_blocks2.10": -0.004650585973832621,
+      "dec_blocks2.11": -0.0137657344825448,
+      "decoder_embed": -0.00936317976064974,
+      "downstream_head1": 0.2892044397594098,
+      "downstream_head2": 0.21026849383022272,
+      "enc_blocks.0": 0.03317417994667333,
+      "enc_blocks.1": 0.02300489861722576,
+      "enc_blocks.2": 0.0015501953246109454,
+      "enc_blocks.3": 0.00923916413468096,
+      "enc_blocks.4": 0.026849383022260767,
+      "enc_blocks.5": -0.0015501953246107303,
+      "enc_blocks.6": 0.0008681093817821123,
+      "enc_blocks.7": 0.036522601847833,
+      "enc_blocks.8": -0.0011781484467041723,
+      "enc_blocks.9": 0.043591492528058676,
+      "enc_blocks.10": 0.021702734544552592,
+      "enc_blocks.11": 0.007316921932163456,
+      "enc_blocks.12": 0.0295157189805916,
+      "enc_blocks.13": 0.009363179760649955,
+      "enc_blocks.14": 0.03199603149996916,
+      "enc_blocks.15": 0.01829230483040864,
+      "enc_blocks.16": -0.015253921994171247,
+      "enc_blocks.17": 0.008247039126930067,
+      "enc_blocks.18": 0.004774601599801617,
+      "enc_blocks.19": 0.04917219569665791,
+      "enc_blocks.20": -0.003224406275190672,
+      "enc_blocks.21": 0.004464562534879557,
+      "enc_blocks.22": 0.046691883177280354,
+      "enc_blocks.23": 0.002480312519377556
+    },
+    "top_sensitive": [
+      {
+        "unit": "downstream_head1",
+        "d": 0.2892044397594098
+      },
+      {
+        "unit": "dec_blocks2.8",
+        "d": 0.2586345879580828
+      },
+      {
+        "unit": "downstream_head2",
+        "d": 0.21026849383022272
+      },
+      {
+        "unit": "enc_blocks.19",
+        "d": 0.04917219569665791
+      },
+      {
+        "unit": "enc_blocks.22",
+        "d": 0.046691883177280354
+      },
+      {
+        "unit": "enc_blocks.9",
+        "d": 0.043591492528058676
+      },
+      {
+        "unit": "enc_blocks.7",
+        "d": 0.036522601847833
+      },
+      {
+        "unit": "enc_blocks.0",
+        "d": 0.03317417994667333
+      },
+      {
+        "unit": "enc_blocks.14",
+        "d": 0.03199603149996916
+      },
+      {
+        "unit": "dec_blocks2.3",
+        "d": 0.029949773671482657
+      }
+    ],
+    "align": "sim3"
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_int4_wo_leave_one_unit",
+    "bits": 4,
+    "n_units": 51,
+    "mode": "full"
+  }
+}

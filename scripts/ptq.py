@@ -297,11 +297,117 @@ def logical_int_mb(model: nn.Module, scope: str = "trunk", bits: int = 8) -> flo
     return (total - saved) / 1e6
 
 
+# --- §6.3 sensitivity: leave-one-unit (or group) fake WO ---
+
+
+def classify_unit(fqn: str) -> Optional[str]:
+    """Map a Linear FQN to a sensitivity unit id (block/head)."""
+    parts = fqn.split(".")
+    for name in ("enc_blocks", "dec_blocks", "dec_blocks2"):
+        if name in parts:
+            i = parts.index(name)
+            return f"{name}.{parts[i + 1]}"
+    if "patch_embed" in fqn:
+        return "patch_embed"
+    if "decoder_embed" in fqn:
+        return "decoder_embed"
+    if "downstream_head1" in fqn:
+        return "downstream_head1"
+    if "downstream_head2" in fqn:
+        return "downstream_head2"
+    return None
+
+
+def list_sensitivity_units(model: nn.Module) -> list[str]:
+    """Sorted unique units that contain ≥1 Linear."""
+    units = set()
+    for fqn, module in model.named_modules():
+        if isinstance(module, nn.Linear):
+            u = classify_unit(fqn)
+            if u:
+                units.add(u)
+
+    def sort_key(k: str):
+        parts = k.split(".")
+        if len(parts) == 2 and parts[1].isdigit():
+            return (parts[0], int(parts[1]))
+        return (k, -1)
+
+    return sorted(units, key=sort_key)
+
+
+def coarse_unit_groups() -> dict[str, list[str]]:
+    """Optional coarser buckets for a faster first-pass profile."""
+    return {
+        "enc_early": [f"enc_blocks.{i}" for i in range(0, 8)],
+        "enc_mid": [f"enc_blocks.{i}" for i in range(8, 16)],
+        "enc_late": [f"enc_blocks.{i}" for i in range(16, 24)],
+        "dec_early": [f"dec_blocks.{i}" for i in range(0, 4)],
+        "dec_mid": [f"dec_blocks.{i}" for i in range(4, 8)],
+        "dec_late": [f"dec_blocks.{i}" for i in range(8, 12)],
+        "dec2_early": [f"dec_blocks2.{i}" for i in range(0, 4)],
+        "dec2_mid": [f"dec_blocks2.{i}" for i in range(4, 8)],
+        "dec2_late": [f"dec_blocks2.{i}" for i in range(8, 12)],
+        "decoder_embed": ["decoder_embed"],
+        "downstream_head1": ["downstream_head1"],
+        "downstream_head2": ["downstream_head2"],
+    }
+
+
+def apply_int_wo_units(
+    model: nn.Module, units: set[str], bits: int = 4
+) -> dict:
+    """Fake int weight-only on Linears belonging to the given unit ids (incl. heads)."""
+    n = 0
+    hit: set[str] = set()
+    with torch.no_grad():
+        for fqn, module in model.named_modules():
+            if not isinstance(module, nn.Linear):
+                continue
+            u = classify_unit(fqn)
+            if u is not None and u in units:
+                _fake_int_weight_only_linear(module, bits=bits)
+                n += 1
+                hit.add(u)
+    info = {
+        "method": f"fake_int{bits}_wo_leave_units",
+        "bits": bits,
+        "act_bits": 16,
+        "units": sorted(units),
+        "units_hit": sorted(hit),
+        "n_linears_quantized": n,
+    }
+    log.info("PTQ applied: %s", info)
+    return info
+
+
+def apply_int_wo_except_units(
+    model: nn.Module,
+    protect: set[str],
+    bits: int = 4,
+    always_protect_heads: bool = True,
+) -> dict:
+    """W4/W8 WO on all Linear units except protected ones (§6.3 allocation)."""
+    protect = set(protect)
+    if always_protect_heads:
+        protect |= {"downstream_head1", "downstream_head2"}
+    all_units = set(list_sensitivity_units(model))
+    to_quant = all_units - protect
+    info = apply_int_wo_units(model, to_quant, bits=bits)
+    info["method"] = f"fake_int{bits}_wo_except_units"
+    info["protect"] = sorted(protect)
+    info["n_units_quantized"] = len(info.get("units_hit", []))
+    info["n_units_protected"] = len(protect & all_units)
+    return info
+
+
 def patch_load_mast3r(
     scope: str = "trunk",
     method: str = "fake",
     bits: int = 8,
     act_bits: Optional[int] = None,
+    units: Optional[list[str]] = None,
+    protect: Optional[list[str]] = None,
 ) -> None:
     """Monkeypatch mast3r_slam.mast3r_utils.load_mast3r to apply PTQ after load."""
     import mast3r_slam.mast3r_utils as mu
@@ -310,7 +416,17 @@ def patch_load_mast3r(
 
     def load_mast3r_quant(path=None, device="cuda"):
         model = orig(path=path, device=device)
-        if method in ("fake_fp8", "fp8"):
+        if method == "fake_except":
+            info = apply_int_wo_except_units(
+                model, set(protect or []), bits=bits, always_protect_heads=True
+            )
+            logical_bits = bits
+        elif method == "fake_units":
+            if not units:
+                raise ValueError("method=fake_units requires units=[...]")
+            info = apply_int_wo_units(model, set(units), bits=bits)
+            logical_bits = bits
+        elif method in ("fake_fp8", "fp8"):
             info = apply_fp8_fake(model, scope=scope, quantize_acts=True)
             logical_bits = 8
         elif method == "fake_fp8_wo":
