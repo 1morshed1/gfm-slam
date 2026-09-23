@@ -36,9 +36,11 @@ FP8 transfers cleanly; W4-protect is softer on this seq than on TUM mean.
 
 ## Next action
 
-1. Commit EuRoC EXPs + runner fix.
-2. Manuscript draft from `figures/` + shortlist tables.
-3. Optional: more EuRoC seqs / prune.
+1. **Run real FP8 speedup bench on rig GPU-2** (`bash scripts/run_bench_fp8_rig.sh kernel`
+   then `trunk`) → first real §6.5 Pareto point. Track-A quant is fake-quant = no real
+   speedup; `bench_fp8.py` uses `torch._scaled_mm` (native e4m3), isolated from MASt3R mp.
+2. Manuscript draft (`paper/manuscript.md`) — skeleton up; novelty reframed post scoop-watch.
+3. Optional: more EuRoC seqs / prune / real W4 kernel (sm_120 packing still unsolved).
 
 ## Gate ledger
 

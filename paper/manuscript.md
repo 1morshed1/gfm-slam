@@ -130,7 +130,8 @@ held fixed for a clean ablation.
 
 ### 6.5 Efficiency Pareto (accuracy vs latency / mem / energy)
 - `figures/shortlist_pareto_bars.{png,pdf}`.
-- **GAP:** real latency/energy not yet measured (torchao/modelopt speedup gate open — mxfp8/cutlass .so load failures). Currently accuracy + peak-mem only. **Must close before claiming Pareto (D5 contribution).**
+- **GAP (root cause found 2026-09-23):** Track-A quant is *fake-quant* (ptq.py: quantize→dequantize into fp16), so its compute path is fp16 — **zero real latency/energy delta**. torchao mxfp8/cutlass `.so` fail on sm_120; real int8 path unpicklable under MASt3R mp; no real INT4 kernel.
+- **In progress:** `scripts/bench_fp8.py` — real FP8 via `torch._scaled_mm` (native e4m3 tensor cores), isolated from MASt3R mp. Modes: `kernel` (shape speedup + TFLOP/s), `trunk` (ViT-L Linear inventory latency + fp16→fp8 weight bytes) + NVML energy. Run on rig GPU-2: `bash scripts/run_bench_fp8_rig.sh {kernel,trunk}`. **PENDING rig run** → first real Pareto point. W4 latency still open (needs sm_120 packed kernel).
 
 ---
 
