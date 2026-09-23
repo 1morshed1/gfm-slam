@@ -1,0 +1,38 @@
+{
+  "exp_id": "20260923-phase2-euroc-v101-fp8",
+  "timestamp": "2026-09-23T08:47:20+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": "configs/fp8_trunk.yaml",
+  "config_hash": "cd39b2d05330",
+  "seed": 0,
+  "dataset": "euroc_V1_01_easy",
+  "metrics": {
+    "ate_rmse_m": 0.036602,
+    "fp16_baseline_ate_rmse_m": 0.039528,
+    "ate_rel_change": -0.07402347702894146,
+    "align": "sim3"
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_fp8_e4m3_per_channel_w_per_token_a",
+    "scope": "trunk"
+  },
+  "note": "single-seq spot check; full EuRoC deferred"
+}

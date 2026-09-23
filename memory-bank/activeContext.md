@@ -1,6 +1,6 @@
 # activeContext — current phase, gate status, next action
 
-**As of:** 2026-09-23 (H3 committed; paper figures generated)
+**As of:** 2026-09-23 (EuRoC shortlist spot-check done)
 
 ## Locked decisions
 
@@ -15,32 +15,34 @@
 
 ## Current phase
 
-**Track A + H3 frozen for writeup.** Paper artifacts in `figures/`.
+**Track A + H3 frozen; EuRoC V1_01_easy spot-check done** (full 11-seq still deferred).
 
-### Full TUM fr1 shortlist
+### TUM fr1 mean shortlist
 
-| config | mean vs FP16 |
-|--------|----------------|
+| config | vs FP16 |
+|--------|---------|
 | FP8 e4m3 | −0.4% |
-| W8A8 | +6.8% |
-| **W4 geometry-protect K=7** | **+7.1%** (beats mag +10.9%, uniform +12.8%) |
+| W4 geometry-protect K=7 | +7.1% (beats mag +10.9%) |
+| W4 uniform | +12.8% |
 
-### Artifacts
+### EuRoC V1_01_easy (vs FP16 0.0395 m)
 
-- `figures/sensitivity_heatmap.{png,pdf}`
-- `figures/shortlist_pareto_bars.{png,pdf}`
-- `figures/shortlist_table.md`
-- Generator: `scripts/plot_paper_figures.py`
+| config | RMSE | vs FP16 |
+|--------|------|---------|
+| **FP8** | **0.0366 m** | **−7.4%** |
+| W4 geom-greedy K=7 | 0.0467 m | +18.0% |
+
+FP8 transfers cleanly; W4-protect is softer on this seq than on TUM mean.
 
 ## Next action
 
-1. Commit/push figures.
-2. Optional: EuRoC on FP8 + W4-greedy.
-3. Draft paper sections from shortlist + H3 table.
+1. Commit EuRoC EXPs + runner fix.
+2. Manuscript draft from `figures/` + shortlist tables.
+3. Optional: more EuRoC seqs / prune.
 
 ## Gate ledger
 
-- [x] Phase 0–2 PTQ ladder + §6.3 sensitivity
-- [x] Phase 4: geometry vs magnitude (H3 ✓) — commit `091825e`
-- [x] Paper figures (heatmap + shortlist)
-- [ ] EuRoC / manuscript draft
+- [x] Phase 0–4 Track A + H3
+- [x] Paper figures
+- [x] EuRoC V1_01 shortlist (FP8 + W4-greedy)
+- [ ] Manuscript draft / fuller EuRoC
