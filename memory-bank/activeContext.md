@@ -1,6 +1,6 @@
 # activeContext — current phase, gate status, next action
 
-**As of:** 2026-09-24 (K-budget sweep DONE; manuscript §6.6 filled)
+**As of:** 2026-09-24 (review response: multi-seed + EuRoC in flight)
 
 ## Locked decisions
 
@@ -8,38 +8,31 @@
 |---|----------|-------|
 | D0 | GPU pin | **GPU-2** |
 | D1 | Deploy | No deploy for now |
-| D2 | Venue | Vision/geometry paper ~3 mo |
+| D2 | Venue | **Workshop / short first**; 3DV main only if multi-seed + transfer hold |
 | D3 | SLAM | MASt3R-SLAM primary |
-| D4 | Method | PTQ-first → pruning |
-| D5 | Real-time | Target; Pareto = contribution |
+| D4 | Method | PTQ-first |
+| D5 | Real-time | Memory axis only under D1 |
 
 ## Current phase
 
-Manuscript working draft + **K-sweep complete**. Best protect budget **K=9 (+5.4% vs FP16)**; K=11 regresses (+13.5%). H3 remains at matched K=7.
+Responding to review: **Pri-1 multi-seed** (H3 + K-sweep) on GPU-2; **EuRoC** download via HF continues on CPU.
 
-### K-budget sweep (greedy W4)
+### In flight
+- `scripts/run_multiseed_h3_ksweep.sh` — seeds 0,1,2; configs FP16/FP8/W4u/mag-K7/geom-K{3,5,7,9,11}
+- `scripts/eval_ate.py` — evo wrapper (no longer a stub)
+- EuRoC HF room zips → then `run_euroc_shortlist.sh`
 
-| K | vs FP16 |
-|--:|--------:|
-| 3 | +14.2% |
-| 5 | +8.0% |
-| 7 | +7.1% |
-| **9** | **+5.4%** |
-| 11 | +13.5% |
+### Manuscript
+- §6.6 U-shape / over-protection **softened** pending error bars
+- Honest workshop-tier framing
 
-Figure: `figures/k_budget_pareto.{png,pdf}`
-
-## Next action
-
-1. Venue: **3DV primary** (locked in manuscript header)
-2. Optional: more EuRoC / polish passes
-3. Stretch: packed W4 latency if kernels appear
+## Next after runs
+1. Fill tables with mean±std; drop U-shape if inside bars
+2. Held-out sensitivity (Pri-3)
+3. EuRoC §6.4 update
 
 ## Gate ledger
-
-- [x] Phase 0–4 Track A + H3
-- [x] Manuscript working draft (+ K=9 / U-shape polish)
-- [x] EuRoC V1_01 shortlist
-- [x] §6.5 FP8 microbench + ModelOpt/TE probe
-- [x] K-budget sweep (blocker 3) — best K=9
-- [x] §4.4 asymmetric arm — cut
+- [~] Multi-seed H3 + K-sweep — **running**
+- [~] EuRoC multi-seq — downloading
+- [x] eval_ate.py implemented
+- [~] Venue reframe

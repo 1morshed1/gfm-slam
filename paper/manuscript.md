@@ -12,7 +12,7 @@
 
 Feed-forward SLAM systems such as MASt3R-SLAM spend most of their compute in a large geometric foundation model (GFM) trunk. Compressing that trunk is therefore the natural path to lower memory and energy, but standard foundation-model quantization optimizes reconstruction or language proxies that need not preserve trajectory quality. We study post-training quantization (PTQ) of the MASt3R trunk under a *closed-loop* objective: absolute trajectory error (ATE) with the classical pose-graph back-end frozen in FP32.
 
-On TUM RGB-D fr1, uniform FP8-e4m3 matches the FP16 baseline within **−0.4%** mean ATE while cutting trunk weight storage **2×**. At W4, protecting the $K{=}7$ units with highest measured leave-one ATE sensitivity reduces mean ATE degradation from **+12.8%** (uniform W4) to **+7.1%**, and beats a matched-budget magnitude-L1 proxy by **3.6%** relative mean ATE; a budget sweep finds a further sweet spot at **$K{=}9$ (+5.4%)**, with over-protection at $K{=}11$ hurting mean ATE. Real fused FP8 kernels on Blackwell do **not** yield end-to-end GEMM speedups for trunk-like shapes in our probes; under a no-deploy setting we therefore treat **accuracy + memory** as the primary efficiency axes. The takeaway is methodological: for compression-for-SLAM, the right sensitivity signal is the closed SLAM loop, not a weight statistic.
+On TUM RGB-D fr1, uniform FP8-e4m3 matches the FP16 baseline within **−0.4%** mean ATE while cutting trunk weight storage **2×**. At W4, protecting the $K{=}7$ units with highest measured leave-one ATE sensitivity reduces mean ATE degradation from **+12.8%** (uniform W4) to **+7.1%**, and beats a matched-budget magnitude-L1 proxy by **3.6%** relative mean ATE *(single-run; multi-seed mean±std pending)*. A $K$-budget sweep is underway; we do **not** claim a U-shape until error bars exist. Real fused FP8 kernels on Blackwell do **not** yield end-to-end GEMM speedups for trunk-like shapes in our probes; under a no-deploy setting we therefore treat **accuracy + memory** as the primary efficiency axes. The takeaway is methodological: for compression-for-SLAM, the right sensitivity signal is the closed SLAM loop, not a weight statistic.
 
 ---
 
@@ -154,19 +154,19 @@ Track-A SLAM ATE runs use fake quant and therefore have **no** real compute spee
 
 **Paper claim under D1:** report **accuracy + memory** Pareto; do **not** claim end-to-end SLAM FLOP speedup from current FP8 paths. W4 packed-kernel latency remains open.
 
-### 6.6 Budget sweep over $K$
+### 6.6 Budget sweep over $K$ *(single-run — provisional)*
 
-Greedy protect sets for $K \in \{3,5,7,9,11\}$ (heads always included). $K{=}7$ reuses the locked shortlist EXP. Figure: `figures/k_budget_pareto.{png,pdf}`.
+Greedy protect sets for $K \in \{3,5,7,9,11\}$ (heads always included). **Caveat (review):** all points below are **single-run, seed=0**, with no error bars. Absolute gaps between $K{=}7/9/11$ are $\sim$1–2 mm on a $\sim$30 mm baseline — within plausible SLAM nondeterminism. Under fake weight-only quant, protecting more units is strictly less weight perturbation, so a mechanistic U-shape is unlikely; treat the $K{=}11$ regression as **unconfirmed** until multi-seed mean±std lands (`scripts/run_multiseed_h3_ksweep.sh`).
 
 | $K$ | mean ATE (m) | vs FP16 | note |
 |----:|-------------:|--------:|------|
 | 3 | 0.0337 | +14.2% | near 15% gate |
 | 5 | 0.0319 | +8.0% | |
 | 7 | 0.0316 | +7.1% | H3 operating point |
-| **9** | **0.0311** | **+5.4%** | **best** |
-| 11 | 0.0335 | +13.5% | over-protect; room/teddy hurt |
+| 9 | 0.0311 | +5.4% | lowest single-run |
+| 11 | 0.0335 | +13.5% | **do not claim over-protection** until ±std |
 
-**Takeaway:** accuracy improves from $K{=}3\to9$, then **degrades at $K{=}11$** — protecting lower-sensitivity units can hurt mean ATE (notably `room`/`teddy`). The operating sweet spot on TUM fr1 is **$K{=}9$** (+5.4%), with $K{=}7$ still the fair H3 match to the magnitude proxy. EXPs: `results/20260924-ksweep-w4-geom-k{3,5,7,9,11}.json`.
+**Working claim until multi-seed:** geometry-greedy protection improves over uniform W4 for $K\!\gtrsim\!5$; accuracy is **roughly flat** for mid-range $K$. Drop any “over-protection hurts” narrative unless error bars support it. Figure: `figures/k_budget_pareto.{png,pdf}` (single-run).
 
 ---
 
@@ -176,7 +176,7 @@ Greedy protect sets for $K \in \{3,5,7,9,11\}$ (heads always included). $K{=}7$ 
 
 **Limitations.** (i) Sensitivity and allocation are fit primarily on TUM; EuRoC is one sequence. (ii) Fake quant isolates accuracy, not wall-clock W4. (iii) Fused FP8 on Blackwell did not beat FP16 for trunk-like GEMMs in ModelOpt/torchao; TE unavailable. (iv) Asymmetric-precision arm cut. (v) Distillation dropped by decision D4.
 
-**Threats.** Overfit of protect sets to fr1/desk leave-one profile; the $K$-sweep (§6.6) shows a non-monotonic curve (best at $K{=}9$, worse at $K{=}11$), so budget choice matters and more protect is not always better.
+**Threats.** Overfit of protect sets to fr1/desk leave-one profile (desk is also in the fr1 mean — mild leakage). Single-run $K$-sweep differences are smaller than typical SLAM noise; multi-seed mean±std required before interpreting curvature.
 
 ---
 
@@ -199,6 +199,7 @@ Compressing GFMs for feed-forward SLAM should optimize the metric the system is 
 
 1. [~] Novelty — reframed 2026-09-23; re-run scoop-watch pre-submission.
 2. [~] Latency/energy — microbench done; claim memory, not FLOP speedup.
-3. [x] Budget sweep over $K$ — done 2026-09-24; best **$K{=}9$ (+5.4%)**, U-shape at $K{=}11$.
-4. [ ] More EuRoC (deferred).
+3. [~] Budget sweep over $K$ — single-run done; **multi-seed re-run in progress** before claiming U-shape.
+4. [~] More EuRoC — download/eval in progress (HF mirror).
 5. [x] Asymmetric-precision arm — **cut** (§4.4).
+6. [~] Venue — reframe as focused empirical / workshop-tier until multi-seed + transfer land.
