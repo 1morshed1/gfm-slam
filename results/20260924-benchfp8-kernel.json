@@ -1,0 +1,91 @@
+{
+  "exp_id": "20260924-benchfp8-kernel",
+  "timestamp": "2026-09-24T04:52:47+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "synthetic-kernel",
+  "metrics": {
+    "mode": "kernel",
+    "shapes": [
+      {
+        "M": 4096,
+        "K": 4096,
+        "N": 4096,
+        "fp16_ms": 0.5579513549804688,
+        "fp8_ms": 0.3469059371948242,
+        "speedup": 1.6083649634025154,
+        "fp16_tflops": 246.32784246363394,
+        "fp8_tflops": 396.1850713290431
+      },
+      {
+        "M": 8192,
+        "K": 1024,
+        "N": 3072,
+        "fp16_ms": 0.19655296325683594,
+        "fp8_ms": 0.21761215209960938,
+        "speedup": 0.9032260439521141,
+        "fp16_tflops": 262.2174028719839,
+        "fp8_tflops": 236.84158745145976
+      },
+      {
+        "M": 8192,
+        "K": 1024,
+        "N": 4096,
+        "fp16_ms": 0.24811487197875975,
+        "fp8_ms": 0.2656271934509277,
+        "speedup": 0.9340718047551738,
+        "fp16_tflops": 276.9663752436526,
+        "fp8_tflops": 258.7064819803373
+      },
+      {
+        "M": 8192,
+        "K": 4096,
+        "N": 1024,
+        "fp16_ms": 0.25517728805541995,
+        "fp8_ms": 0.3825894546508789,
+        "speedup": 0.6669741806874283,
+        "fp16_tflops": 269.30091333628155,
+        "fp8_tflops": 179.6167560308425
+      },
+      {
+        "M": 1024,
+        "K": 1024,
+        "N": 1024,
+        "fp16_ms": 0.024306240081787108,
+        "fp8_ms": 0.11403455734252929,
+        "speedup": 0.21314801976016506,
+        "fp16_tflops": 88.35112468131709,
+        "fp8_tflops": 18.831867269406185
+      }
+    ],
+    "mean_speedup": 0.8651570025114793,
+    "energy": {
+      "method": "pynvml.nvmlDeviceGetPowerUsage",
+      "hz": 50.0,
+      "n_samples": 79,
+      "mean_w": 281.66507594936706,
+      "max_w": 462.128
+    },
+    "peak_mem_mb": 223.481344
+  },
+  "bench": "fp8_real_scaled_mm"
+}
