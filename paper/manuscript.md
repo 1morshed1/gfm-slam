@@ -32,7 +32,7 @@ held fixed for a clean ablation.
 - **Contributions** (reframed 2026-09-23 after scoop-watch — task-aware MP for GFMs already exists, so we lead on the SLAM loop + allocator, not on "downstream-aware is new"):
   1. **Closed-SLAM-loop metric as the sensitivity signal** — bits allocated by measured **ATE/pointmap** with the classical back-end held **fixed FP32**. Prior GFM quant (QVGGT) stops at the forward-pass pose head and never closes the loop. **Primary wedge.**
   2. **Algorithmic allocator at matched budget** — greedy/ILP (§4.3) with a **head-to-head vs magnitude proxy and uniform** at equal K (H3); prior work hand-picks fragile blocks heuristically.
-  3. Full-SLAM compression study on commodity Blackwell (MASt3R-SLAM): ATE/RPE + pointmap vs latency/peak-mem/energy Pareto. *(accuracy done; latency/energy PENDING — see §6.5 gap)*
+  3. Full-SLAM compression study on commodity Blackwell (MASt3R-SLAM): ATE/RPE + pointmap vs latency/peak-mem/energy Pareto. *(accuracy done; §6.5: memory 2× real, fused FP8 latency no win — see EXPs)*
 
 **RISK (novelty.md R5): PARTIALLY SCOOPED.** QVGGT (2605.31124) and Mix-QVLA (2606.19565) already do task-aware mixed-precision. Distinction now rests on the three points above; do NOT claim downstream-aware allocation itself is new. See §2.
 
