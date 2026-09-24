@@ -130,8 +130,13 @@ held fixed for a clean ablation.
 
 ### 6.5 Efficiency Pareto (accuracy vs latency / mem / energy)
 - `figures/shortlist_pareto_bars.{png,pdf}`.
-- **GAP (root cause found 2026-09-23):** Track-A quant is *fake-quant* (ptq.py: quantize→dequantize into fp16), so its compute path is fp16 — **zero real latency/energy delta**. torchao mxfp8/cutlass `.so` fail on sm_120; real int8 path unpicklable under MASt3R mp; no real INT4 kernel.
-- **In progress:** `scripts/bench_fp8.py` — real FP8 via `torch._scaled_mm` (native e4m3 tensor cores), isolated from MASt3R mp. Modes: `kernel` (shape speedup + TFLOP/s), `trunk` (ViT-L Linear inventory latency + fp16→fp8 weight bytes) + NVML energy. Run on rig GPU-2: `bash scripts/run_bench_fp8_rig.sh {kernel,trunk}`. **PENDING rig run** → first real Pareto point. W4 latency still open (needs sm_120 packed kernel).
+- **GAP (root cause):** Track-A PTQ is *fake-quant* (ptq.py), so SLAM ATE runs have **zero real latency delta**.
+- **Real FP8 microbench on GPU-2 (2026-09-24):** `scripts/bench_fp8.py` via `torch._scaled_mm`.
+  - Large square GEMM 4096³: **1.61×** vs FP16.
+  - Kernel mean (5 shapes): **0.87×**; trunk 192 Linears: **0.30×** (per-call overhead).
+  - Weight storage: **2.00×** smaller (944→472 MB). EXPs: `results/20260924-benchfp8-{kernel,trunk}.json`.
+- **ModelOpt / TE fused path (2026-09-24):** TE `transformer-engine-torch` 2.19.0 **failed to build** (no sm_120 wheel). ModelOpt `FP8_DEFAULT_CFG` + `enable_real_quant_gemm` runs (cuda ext loads) but is **slower** than FP16 on tested shapes (0.75× / 0.12× / 0.17×). torchao Float8Dynamic similarly ≤1×. EXP: `results/20260924-benchfp8-modelopt-te.json`.
+- **Paper claim for §6.5:** accuracy + **memory** Pareto under D1; do **not** claim end-to-end SLAM FLOP speedup from current FP8 paths. W4 latency still open (needs packed kernel).
 
 ---
 
@@ -157,7 +162,7 @@ held fixed for a clean ablation.
 
 ## Submission blockers (track to zero)
 1. [~] Novelty verification — DONE 2026-09-23: partially scooped (QVGGT, Mix-QVLA). Wedge reframed to closed-loop-ATE + fixed back-end + algorithmic allocator (§1, §2). Re-run pre-submission.
-2. [ ] Latency/energy measurements — close speedup gate, fill §6.5 Pareto.
+2. [~] Latency/energy — microbench done; **no fused FP8 latency win** yet. Lead with memory 2×; TE install blocked.
 3. [ ] Budget sweep over K (not just K=7) for a real Pareto curve.
 4. [ ] More EuRoC sequences (transfer claim rests on 1 seq).
 5. [ ] Decide fate of asymmetric-precision arm (§4.4): run or cut.

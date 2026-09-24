@@ -1,0 +1,77 @@
+{
+  "exp_id": "20260924-benchfp8-modelopt-te",
+  "timestamp": "2026-09-24T06:30:28+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "synthetic-kernel",
+  "metrics": {
+    "modelopt_fp8_vs_fp16": [
+      {
+        "M": 4096,
+        "K": 4096,
+        "N": 4096,
+        "fp16_ms": 0.508,
+        "fp8_ms": 0.681,
+        "speedup": 0.75
+      },
+      {
+        "M": 1024,
+        "K": 1024,
+        "N": 4096,
+        "fp16_ms": 0.04,
+        "fp8_ms": 0.326,
+        "speedup": 0.12
+      },
+      {
+        "M": 1024,
+        "K": 4096,
+        "N": 1024,
+        "fp16_ms": 0.055,
+        "fp8_ms": 0.329,
+        "speedup": 0.17
+      }
+    ],
+    "torchao_fp8_vs_bf16": [
+      {
+        "shape": "4096^3",
+        "speedup": 0.91
+      },
+      {
+        "shape": "1024x1024x4096",
+        "speedup": 0.13
+      },
+      {
+        "shape": "1024x4096x1024",
+        "speedup": 0.14
+      }
+    ],
+    "te_status": "build_failed",
+    "prior_scaled_mm_4096": 1.61,
+    "conclusion": "No ModelOpt/TE fused FP8 latency win. Best compute point remains raw torch._scaled_mm 4096^3 at 1.61x; memory 2x remains the clean deploy axis under D1."
+  },
+  "system": "microbench",
+  "quant": {
+    "modelopt": "0.46.1 FP8_DEFAULT_CFG + enable_real_quant_gemm",
+    "transformer_engine": "install failed: source build of transformer-engine-torch 2.19.0",
+    "torchao": "Float8DynamicActivationFloat8WeightConfig (secondary probe)"
+  }
+}
