@@ -1,0 +1,12 @@
+K_BUDGET_SWEEP_START 2026-09-24T06:55:48+00:00
+==> RUN TAG=w4_geom_k3 K=3 PROTECT=dec_blocks2.8,downstream_head1,downstream_head2,enc_blocks.19,enc_blocks.22
+K=3 mean=0.033723 vs_fp16=+14.2% vs_w4u=+1.2% n=9
+==> RUN TAG=w4_geom_k5 K=5 PROTECT=dec_blocks2.8,downstream_head1,downstream_head2,enc_blocks.19,enc_blocks.22,enc_blocks.7,enc_blocks.9
+K=5 mean=0.031905 vs_fp16=+8.0% vs_w4u=-4.3% n=9
+==> REUSE K=7 from sens-protect-d3 EXP
+K=7 mean=0.031630 vs_fp16=+7.1% REUSE
+==> RUN TAG=w4_geom_k9 K=9 PROTECT=dec_blocks2.3,dec_blocks2.8,downstream_head1,downstream_head2,enc_blocks.0,enc_blocks.12,enc_blocks.14,enc_blocks.19,enc_blocks.22,enc_blocks.7,enc_blocks.9
+K=9 mean=0.031135 vs_fp16=+5.4% vs_w4u=-6.6% n=9
+==> RUN TAG=w4_geom_k11 K=11 PROTECT=dec_blocks.8,dec_blocks2.3,dec_blocks2.8,downstream_head1,downstream_head2,enc_blocks.0,enc_blocks.12,enc_blocks.14,enc_blocks.19,enc_blocks.22,enc_blocks.4,enc_blocks.7,enc_blocks.9
+K=11 mean=0.033535 vs_fp16=+13.5% vs_w4u=+0.6% n=9
+K_BUDGET_SWEEP_DONE 2026-09-24T08:50:55+00:00

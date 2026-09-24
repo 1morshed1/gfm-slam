@@ -1,0 +1,69 @@
+{
+  "exp_id": "20260924-ksweep-w4-geom-k11",
+  "timestamp": "2026-09-24T08:50:52+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "tum_fr1_all",
+  "metrics": {
+    "ate_rmse_per_seq_m": {
+      "rgbd_dataset_freiburg1_360": 0.046063,
+      "rgbd_dataset_freiburg1_desk": 0.016,
+      "rgbd_dataset_freiburg1_desk2": 0.026055,
+      "rgbd_dataset_freiburg1_floor": 0.030435,
+      "rgbd_dataset_freiburg1_plant": 0.016405,
+      "rgbd_dataset_freiburg1_room": 0.079267,
+      "rgbd_dataset_freiburg1_rpy": 0.024117,
+      "rgbd_dataset_freiburg1_teddy": 0.054386,
+      "rgbd_dataset_freiburg1_xyz": 0.009091
+    },
+    "ate_rmse_mean_m": 0.033535444444444444,
+    "fp16_ate_mean_m": 0.029538111111111112,
+    "uniform_w4_ate_mean_m": 0.033322,
+    "ate_rel_change_mean_vs_fp16": 0.13532799434252543,
+    "ate_rel_change_mean_vs_uniform_w4": 0.006405511207143829,
+    "k": 11,
+    "n_seqs": 9
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_int4_wo_except_units",
+    "bits": 4,
+    "k": 11,
+    "allocator": "greedy_ate",
+    "protect": [
+      "dec_blocks.8",
+      "dec_blocks2.3",
+      "dec_blocks2.8",
+      "downstream_head1",
+      "downstream_head2",
+      "enc_blocks.0",
+      "enc_blocks.12",
+      "enc_blocks.14",
+      "enc_blocks.19",
+      "enc_blocks.22",
+      "enc_blocks.4",
+      "enc_blocks.7",
+      "enc_blocks.9"
+    ],
+    "protect_file": "results/protect_greedy_k11.txt"
+  }
+}

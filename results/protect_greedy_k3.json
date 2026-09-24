@@ -1,0 +1,18 @@
+{
+  "method": "greedy",
+  "score": "ate_rel_delta",
+  "k": 3,
+  "trunk_protect": [
+    "dec_blocks2.8",
+    "enc_blocks.19",
+    "enc_blocks.22"
+  ],
+  "protect": [
+    "dec_blocks2.8",
+    "downstream_head1",
+    "downstream_head2",
+    "enc_blocks.19",
+    "enc_blocks.22"
+  ],
+  "sens_path": "/office/dev_workspace/morshed/projects/gfm-slam/results/20260923-phase2-sens-w4-full-fr1desk.json"
+}

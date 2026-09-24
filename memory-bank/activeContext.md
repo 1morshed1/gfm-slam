@@ -1,6 +1,6 @@
 # activeContext — current phase, gate status, next action
 
-**As of:** 2026-09-24 (ModelOpt/TE fused FP8 probe done)
+**As of:** 2026-09-24 (K-budget sweep DONE; manuscript §6.6 filled)
 
 ## Locked decisions
 
@@ -15,37 +15,31 @@
 
 ## Current phase
 
-**§6.5 fused-FP8 latency probe closed (negative for speedup).** Accuracy + memory remain the paper axes under D1.
+Manuscript working draft + **K-sweep complete**. Best protect budget **K=9 (+5.4% vs FP16)**; K=11 regresses (+13.5%). H3 remains at matched K=7.
 
-### Real FP8 latency (GPU-2)
+### K-budget sweep (greedy W4)
 
-| path | large 4096³ | trunk-like | notes |
-|------|-------------|------------|-------|
-| `torch._scaled_mm` | **1.61×** | trunk stack **0.30×** | memory **2×** |
-| ModelOpt real GEMM | **0.75×** | **0.12–0.17×** | cuda ext OK |
-| torchao Float8Dynamic | **0.91×** | **0.13–0.14×** | secondary |
-| Transformer Engine | — | — | **build failed** (no wheel) |
+| K | vs FP16 |
+|--:|--------:|
+| 3 | +14.2% |
+| 5 | +8.0% |
+| 7 | +7.1% |
+| **9** | **+5.4%** |
+| 11 | +13.5% |
 
-EXP: `results/20260924-benchfp8-modelopt-te.json`
-
-### Track-A accuracy shortlist
-
-| config | TUM mean vs FP16 |
-|--------|------------------|
-| FP8 e4m3 (fake) | −0.4% |
-| W4 geom-protect K=7 | +7.1% |
+Figure: `figures/k_budget_pareto.{png,pdf}`
 
 ## Next action
 
-1. **Manuscript:** claim accuracy + memory Pareto; document fused-FP8 latency negative result honestly.
-2. Skip further FP8 kernel hunting unless TE ships an sm_120 wheel.
-3. Optional: K-budget sweep (paper blocker 3).
+1. Venue: **3DV primary** (locked in manuscript header)
+2. Optional: more EuRoC / polish passes
+3. Stretch: packed W4 latency if kernels appear
 
 ## Gate ledger
 
 - [x] Phase 0–4 Track A + H3
-- [x] Paper figures + manuscript skeleton
+- [x] Manuscript working draft (+ K=9 / U-shape polish)
 - [x] EuRoC V1_01 shortlist
-- [x] §6.5 `_scaled_mm` microbench
-- [x] §6.5 ModelOpt/TE fused FP8 probe (no latency win; TE unusable)
-- [ ] Manuscript polish / K-sweep optional
+- [x] §6.5 FP8 microbench + ModelOpt/TE probe
+- [x] K-budget sweep (blocker 3) — best K=9
+- [x] §4.4 asymmetric arm — cut

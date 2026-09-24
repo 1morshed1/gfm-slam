@@ -20,3 +20,13 @@ Source EXPs under `results/20260922-*.json` and `results/20260923-*.json`.
 | Uniform W4 | 0.0333 | +12.8% | — |
 
 Geometry beats magnitude by 3.6% relative mean ATE at equal unit budget.
+
+## K-budget sweep (greedy W4 protect)
+
+| K | mean ATE | vs FP16 |
+|--:|---------:|--------:|
+| 3 | 0.0337 | +14.2% |
+| 5 | 0.0319 | +8.0% |
+| 7 | 0.0316 | +7.1% |
+| 9 | 0.0311 | +5.4% |
+| 11 | 0.0335 | +13.5% |

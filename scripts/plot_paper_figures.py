@@ -150,6 +150,50 @@ def plot_shortlist_bars(out: Path):
     print(f"wrote {out}")
 
 
+def load_k_sweep() -> list[tuple[int, float, float]]:
+    """Return [(K, mean_ate, vs_fp16_pct), ...] from ksweep EXPs if present."""
+    rows = []
+    for k in (3, 5, 7, 9, 11):
+        p = ROOT / f"results/20260924-ksweep-w4-geom-k{k}.json"
+        if not p.exists():
+            continue
+        rec = json.loads(p.read_text())
+        m = rec["metrics"]
+        rows.append(
+            (
+                k,
+                float(m["ate_rmse_mean_m"]),
+                float(m["ate_rel_change_mean_vs_fp16"]) * 100.0,
+            )
+        )
+    return rows
+
+
+def plot_k_budget_pareto(out: Path):
+    rows = load_k_sweep()
+    if len(rows) < 2:
+        print(f"skip k_budget_pareto: only {len(rows)} EXPs found")
+        return
+    ks = [r[0] for r in rows]
+    means = [r[1] for r in rows]
+    deltas = [r[2] for r in rows]
+    fig, ax = plt.subplots(figsize=(6.5, 4.0), constrained_layout=True)
+    ax.plot(ks, means, "o-", color="#1f77b4", lw=2, markersize=8, label="geom greedy W4")
+    ax.axhline(0.0295, color="gray", ls="--", lw=1, label="FP16 mean")
+    ax.axhline(0.0333, color="#7f7f7f", ls=":", lw=1, label="uniform W4")
+    for k, m, d in rows:
+        ax.annotate(f"{d:+.1f}%", (k, m), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=8)
+    ax.set_xlabel("Protect budget K (trunk units @ FP16)")
+    ax.set_ylabel("TUM fr1 mean ATE RMSE (m)")
+    ax.set_title("§6.6 W4 geometry-greedy budget sweep")
+    ax.set_xticks(ks)
+    ax.legend(fontsize=8)
+    fig.savefig(out, dpi=160)
+    fig.savefig(out.with_suffix(".pdf"))
+    plt.close(fig)
+    print(f"wrote {out} and {out.with_suffix('.pdf')}")
+
+
 def write_shortlist_md(out: Path):
     lines = [
         "# Track-A shortlist (TUM fr1 mean ATE)",
@@ -174,6 +218,17 @@ def write_shortlist_md(out: Path):
         "Geometry beats magnitude by 3.6% relative mean ATE at equal unit budget.",
         "",
     ]
+    ksweep = load_k_sweep()
+    if ksweep:
+        lines += [
+            "## K-budget sweep (greedy W4 protect)",
+            "",
+            "| K | mean ATE | vs FP16 |",
+            "|--:|---------:|--------:|",
+        ]
+        for k, mean, d in ksweep:
+            lines.append(f"| {k} | {mean:.4f} | {d:+.1f}% |")
+        lines.append("")
     out.write_text("\n".join(lines))
     print(f"wrote {out}")
 
@@ -182,6 +237,7 @@ def main():
     deltas = load_deltas()
     plot_sensitivity_heatmap(deltas, FIG / "sensitivity_heatmap.png")
     plot_shortlist_bars(FIG / "shortlist_pareto_bars.png")
+    plot_k_budget_pareto(FIG / "k_budget_pareto.png")
     write_shortlist_md(FIG / "shortlist_table.md")
 
 
