@@ -151,7 +151,20 @@ Leave-one W4 on desk (`figures/sensitivity_heatmap.{png,pdf}`) shows:
 | V2_01_easy | 0.0204 | 0.0292 | 0.0473 |
 | **mean** | **0.0237** | **0.0274 (+15.6%)** | **0.0467 (+96.6%)** |
 
-FP8 is no longer free (MH_01 +38%, V2_01 +43%). The TUM-desk-fit W4 protect set roughly doubles ATE on EuRoC. The single-sequence V1_01 check (−7.4% FP8, +18% W4) was unrepresentative. Uniform W4 and magnitude-K7 have **not** been run on EuRoC, so whether geometry still beats the proxies there is unknown.
+FP8 is no longer free (MH_01 +38%, V2_01 +43%). The TUM-desk-fit W4 protect set roughly doubles ATE on EuRoC. The single-sequence V1_01 check (−7.4% FP8, +18% W4) was unrepresentative.
+
+**Matched W4 baselines on EuRoC** (`results/step1_summary.json`):
+
+| seq | W4 geom-K7 | W4 mag-K7 | W4 uniform |
+|-----|-----------:|----------:|-----------:|
+| V1_01_easy | 0.0467 | 0.0420 | 0.0411 |
+| MH_01_easy | 0.0518 | 0.0608 | 0.0605 |
+| MH_02_easy | 0.0564 | 0.0474 | 0.0575 |
+| V1_02_medium | 0.0312 | 0.0297 | 0.0244 |
+| V2_01_easy | 0.0473 | 0.0183 | 0.0284 |
+| **mean vs FP16** | **+96.6%** | **+66.9%** | **+78.5%** |
+
+**All W4 variants collapse on EuRoC.** The TUM-fit geometry set is the worst on average, but it beats uniform on 2/5 sequences, and V2_01 accounts for most of the gap. With 5 sequences, "geometry is worse" is not a supported claim. "W4 does not transfer, with or without allocation" is.
 
 ### 6.5 Efficiency: memory yes, fused FP8 latency no
 
@@ -181,6 +194,16 @@ Greedy protect sets for $K \in \{3,5,7,9,11\}$ (heads always included), 3 seeds 
 Paired per-sequence bootstrap: K9 vs K11 −5.8% [−12.5%, +1.1%]; K9 vs K7 −2.9% [−8.5%, +1.4%]; K5 vs K7 +0.3% [−4.8%, +5.1%]. **No pairwise difference is significant.** Since the pipeline is deterministic, the $K{=}11$ dip reflects the trajectory's sensitivity to small weight changes rather than seed noise, and cannot be separated from that without a perturbation-based noise estimate. **Drop the U-shape narrative.** Figure `figures/k_budget_pareto.{png,pdf}` is descriptive only.
 
 ---
+
+### 6.7 Perturbation noise floor
+
+Because seeds carry no variance, we estimate run-to-run noise by perturbing FP16 trunk weights multiplicatively, $w(1+10^{-3}\epsilon)$ with $\epsilon\sim\mathcal{N}(0,1)$, about 20× below FP8 rounding error, over 4 draws (`scripts/run_step1_noise_baselines.sh`). The floor is std over {FP16, 4 draws}, relative to FP16.
+
+- **Mean ATE:** std 0.76% (TUM), 0.76% (EuRoC).
+- **Per sequence (TUM):** most below 1% (rpy 0.02%, plant 0.08%, floor 0.13%, desk 0.24%, 360 0.65%); room 1.9%, xyz 2.0%; **desk2 6.5% (range 16%) and teddy 6.1% (range 12%)** are chaotic.
+- **Per sequence (EuRoC):** 0.3–1.9%.
+
+**Implications.** (i) FP8's +15.6% on EuRoC and all W4 collapses are far above the floor, so they are real. (ii) The non-significant TUM comparisons (§6.2, §6.6) reflect genuine disagreement across sequences, not run noise, except on desk2 and teddy, where a single run is unreliable. (iii) The sensitivity profile was fit on `fr1/desk`, a stable sequence (0.24%), so it is likely real *for desk*. The transfer failure therefore points to sequence-specific sensitivity, not measurement noise.
 
 ## 7. Discussion & Limitations
 

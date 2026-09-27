@@ -1,0 +1,152 @@
+{
+  "noise_rel": 0.001,
+  "euroc": {
+    "fp16": {
+      "V1_01_easy": 0.039528,
+      "MH_01_easy": 0.022714,
+      "MH_02_easy": 0.017051,
+      "V1_02_medium": 0.019005,
+      "V2_01_easy": 0.020389
+    },
+    "fp8": {
+      "V1_01_easy": 0.036602,
+      "MH_01_easy": 0.03133,
+      "MH_02_easy": 0.02247,
+      "V1_02_medium": 0.017633,
+      "V2_01_easy": 0.029178
+    },
+    "w4_geom_k7": {
+      "V1_01_easy": 0.046653,
+      "MH_01_easy": 0.051783,
+      "MH_02_easy": 0.05643,
+      "V1_02_medium": 0.031188,
+      "V2_01_easy": 0.047277
+    },
+    "w4_mag_k7": {
+      "V1_01_easy": 0.041958,
+      "MH_01_easy": 0.060759,
+      "MH_02_easy": 0.047425,
+      "V1_02_medium": 0.02967,
+      "V2_01_easy": 0.018294
+    },
+    "w4_uniform": {
+      "V1_01_easy": 0.041125,
+      "MH_01_easy": 0.060456,
+      "MH_02_easy": 0.057469,
+      "V1_02_medium": 0.024403,
+      "V2_01_easy": 0.028419
+    },
+    "noise_n1": {
+      "V1_01_easy": 0.0393,
+      "MH_01_easy": 0.023199,
+      "MH_02_easy": 0.01701,
+      "V1_02_medium": 0.019123,
+      "V2_01_easy": 0.02035
+    },
+    "noise_n2": {
+      "V1_01_easy": 0.039545,
+      "MH_01_easy": 0.023061,
+      "MH_02_easy": 0.017134,
+      "V1_02_medium": 0.018347,
+      "V2_01_easy": 0.020424
+    },
+    "noise_n3": {
+      "V1_01_easy": 0.040214,
+      "MH_01_easy": 0.022953,
+      "MH_02_easy": 0.017061,
+      "V1_02_medium": 0.018414,
+      "V2_01_easy": 0.020276
+    },
+    "noise_n4": {
+      "V1_01_easy": 0.040391,
+      "MH_01_easy": 0.02316,
+      "MH_02_easy": 0.017786,
+      "V1_02_medium": 0.01901,
+      "V2_01_easy": 0.020409
+    }
+  },
+  "euroc_noise_floor": {
+    "per_seq": {
+      "V1_01_easy": {
+        "n": 5,
+        "std_rel": 0.01206390228959038,
+        "range_rel": 0.027600688119813845
+      },
+      "MH_01_easy": {
+        "n": 5,
+        "std_rel": 0.008565609116646571,
+        "range_rel": 0.021352469842387922
+      },
+      "MH_02_easy": {
+        "n": 5,
+        "std_rel": 0.01911725118688832,
+        "range_rel": 0.04551052724180393
+      },
+      "V1_02_medium": {
+        "n": 5,
+        "std_rel": 0.019379811507842275,
+        "range_rel": 0.040831360168376865
+      },
+      "V2_01_easy": {
+        "n": 5,
+        "std_rel": 0.002905042135256822,
+        "range_rel": 0.007258816028250639
+      }
+    },
+    "median_seq_std_rel": 0.01206390228959038,
+    "mean_ate_std_rel": 0.0076317409748602,
+    "n_complete_draws": 4
+  },
+  "tum_noise_floor": {
+    "per_seq": {
+      "rgbd_dataset_freiburg1_360": {
+        "n": 5,
+        "std_rel": 0.006503456445096086,
+        "range_rel": 0.012335936202027003
+      },
+      "rgbd_dataset_freiburg1_desk": {
+        "n": 5,
+        "std_rel": 0.002367123388392075,
+        "range_rel": 0.005890742233521507
+      },
+      "rgbd_dataset_freiburg1_desk2": {
+        "n": 5,
+        "std_rel": 0.06539305279480719,
+        "range_rel": 0.16082132381073835
+      },
+      "rgbd_dataset_freiburg1_floor": {
+        "n": 5,
+        "std_rel": 0.0012587748666583135,
+        "range_rel": 0.002842615205989436
+      },
+      "rgbd_dataset_freiburg1_plant": {
+        "n": 5,
+        "std_rel": 0.0008274499788447447,
+        "range_rel": 0.0022479946865579573
+      },
+      "rgbd_dataset_freiburg1_room": {
+        "n": 5,
+        "std_rel": 0.01931713797949488,
+        "range_rel": 0.04430111038536904
+      },
+      "rgbd_dataset_freiburg1_rpy": {
+        "n": 5,
+        "std_rel": 0.0001899835440531508,
+        "range_rel": 0.0005202913631634405
+      },
+      "rgbd_dataset_freiburg1_teddy": {
+        "n": 5,
+        "std_rel": 0.061010127710065386,
+        "range_rel": 0.11940812112869928
+      },
+      "rgbd_dataset_freiburg1_xyz": {
+        "n": 5,
+        "std_rel": 0.020212244031776253,
+        "range_rel": 0.03742414025623735
+      }
+    },
+    "median_seq_std_rel": 0.006503456445096086,
+    "mean_ate_std_rel": 0.007595669919291712,
+    "n_complete_draws": 4
+  }
+}

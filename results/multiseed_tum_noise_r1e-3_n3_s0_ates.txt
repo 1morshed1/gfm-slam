@@ -1,0 +1,9 @@
+rgbd_dataset_freiburg1_360 0.048717
+rgbd_dataset_freiburg1_desk 0.016152
+rgbd_dataset_freiburg1_desk2 0.023538
+rgbd_dataset_freiburg1_floor 0.024962
+rgbd_dataset_freiburg1_plant 0.019546
+rgbd_dataset_freiburg1_room 0.061326
+rgbd_dataset_freiburg1_rpy 0.023061
+rgbd_dataset_freiburg1_teddy 0.040764
+rgbd_dataset_freiburg1_xyz 0.008902

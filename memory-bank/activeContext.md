@@ -26,10 +26,13 @@
 - §6.6 U-shape / over-protection **softened** pending error bars
 - Honest workshop-tier framing
 
+### Step 1 DONE (2026-09-27, GPU-1; GPU-2 needs explicit permission)
+- EuRoC 5-seq mean vs FP16: geom-K7 +96.6%, uniform +78.5%, mag-K7 +66.9%. **All W4 collapses**; geom worst on average but mixed per-seq (2/5 beats uniform).
+- Noise floor (`ptq.py` method=`noise`, rel 1e-3, 4 draws): mean-ATE std 0.76% on TUM and EuRoC. TUM chaotic seqs: desk2 6.5%, teddy 6.1%; desk (sensitivity fit seq) 0.24%.
+- FP8 EuRoC +15.6% is real (≫ floor). Manuscript §6.4 + §6.7 updated. Summary: `results/step1_summary.json`.
+
 ## Next after runs
-1. Fill tables with mean±std; drop U-shape if inside bars
-2. Held-out sensitivity (Pri-3)
-3. EuRoC §6.4 update
+1. **Direction decision (user):** negative-result workshop paper (leaning) vs pooled/held-out sensitivity rescue (expensive, low prior).
 
 ## Gate ledger
 - [~] Multi-seed H3 + K-sweep — **running**

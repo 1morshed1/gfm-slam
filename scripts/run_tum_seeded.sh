@@ -11,7 +11,7 @@ EXT="$ROOT/ext/MASt3R-SLAM"
 RESULTS="$ROOT/results"
 mkdir -p "$RESULTS"
 
-MODE="${1:?mode required: fp16|fp8|w4_uniform|w4_geom|w4_mag}"
+MODE="${1:?mode required: fp16|fp8|w4_uniform|w4_geom|w4_mag|noise}"
 PROTECT_FILE="${2:-}"
 TAG_BASE="${3:-}"
 SEED="${SEED:-0}"
@@ -21,6 +21,7 @@ case "$MODE" in
   fp16) TAG_BASE="${TAG_BASE:-fp16}"; METHOD=""; BITS=16 ;;
   fp8) TAG_BASE="${TAG_BASE:-fp8_trunk}"; METHOD="fake_fp8"; BITS=8 ;;
   w4_uniform) TAG_BASE="${TAG_BASE:-w4_trunk}"; METHOD="fake"; BITS=4 ;;
+  noise) TAG_BASE="${TAG_BASE:-noise_r${NOISE_REL:-1e-3}_n${NOISE_SEED:?NOISE_SEED required}}"; METHOD="noise"; BITS=16 ;;
   w4_geom|w4_mag)
     METHOD="fake_except"; BITS=4
     if [ -z "$PROTECT_FILE" ]; then
@@ -96,6 +97,9 @@ elif mode in ("w4_geom", "w4_mag"):
     from ptq import patch_load_mast3r
     protect = [p for p in """$PROTECT""".split(",") if p]
     patch_load_mast3r(method="fake_except", bits=4, protect=protect)
+elif mode == "noise":
+    from ptq import patch_load_mast3r
+    patch_load_mast3r(method="noise", noise_rel=float("${NOISE_REL:-1e-3}"), noise_seed=int("${NOISE_SEED:-0}"))
 # fp16: no patch
 
 import runpy

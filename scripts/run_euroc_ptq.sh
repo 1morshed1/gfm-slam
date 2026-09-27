@@ -50,8 +50,21 @@ case "$MODE" in
     SAVE="euroc/calib_ptq/${TAG}/${SEQ}"
     PROTECT='dec_blocks2.8,enc_blocks.19,enc_blocks.22,enc_blocks.9,enc_blocks.7,enc_blocks.0,enc_blocks.14'
     ;;
+  w4_uniform)
+    TAG="w4_trunk"
+    SAVE="euroc/calib_ptq/${TAG}/${SEQ}"
+    ;;
+  w4_mag)
+    TAG="w4_mag_k7"
+    SAVE="euroc/calib_ptq/${TAG}/${SEQ}"
+    PROTECT="$(tr -d '\n' < "$ROOT/results/protect_magnitude_k7.txt")"
+    ;;
+  noise)
+    TAG="noise_r${NOISE_REL:-1e-3}_n${NOISE_SEED:?NOISE_SEED required}"
+    SAVE="euroc/calib_ptq/${TAG}/${SEQ}"
+    ;;
   *)
-    echo "unknown MODE=$MODE (fp16|fp8|w4_greedy)"
+    echo "unknown MODE=$MODE (fp16|fp8|w4_greedy|w4_uniform|w4_mag|noise)"
     exit 1
     ;;
 esac
@@ -69,10 +82,16 @@ mode = "$MODE"
 if mode == "fp8":
     from ptq import patch_load_mast3r
     patch_load_mast3r(method="fake_fp8", scope="trunk")
-elif mode == "w4_greedy":
+elif mode in ("w4_greedy", "w4_mag"):
     from ptq import patch_load_mast3r
     protect = [p for p in "$PROTECT".split(",") if p]
     patch_load_mast3r(method="fake_except", bits=4, protect=protect)
+elif mode == "w4_uniform":
+    from ptq import patch_load_mast3r
+    patch_load_mast3r(method="fake", bits=4, scope="trunk")
+elif mode == "noise":
+    from ptq import patch_load_mast3r
+    patch_load_mast3r(method="noise", noise_rel=float("${NOISE_REL:-1e-3}"), noise_seed=int("${NOISE_SEED:-0}"))
 # fp16: no patch
 import runpy
 sys.argv = [

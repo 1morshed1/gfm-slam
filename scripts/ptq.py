@@ -401,6 +401,29 @@ def apply_int_wo_except_units(
     return info
 
 
+def apply_weight_noise(
+    model: nn.Module, scope: str = "trunk", rel: float = 1e-3, seed: int = 0
+) -> dict:
+    """Multiplicative Gaussian weight noise w*(1+rel*N(0,1)); noise-floor control."""
+    filt = _scope_filter(scope)
+    gen = torch.Generator(device="cpu").manual_seed(seed)
+    n = 0
+    with torch.no_grad():
+        for fqn, module in model.named_modules():
+            if isinstance(module, nn.Linear) and filt(module, fqn):
+                w = module.weight.data
+                eps = torch.randn(w.shape, generator=gen, dtype=torch.float32)
+                w.mul_(1.0 + rel * eps.to(device=w.device, dtype=w.dtype))
+                n += 1
+    return {
+        "method": "weight_noise_mult_gauss",
+        "scope": scope,
+        "rel": rel,
+        "noise_seed": seed,
+        "n_linears_perturbed": n,
+    }
+
+
 def patch_load_mast3r(
     scope: str = "trunk",
     method: str = "fake",
@@ -408,6 +431,8 @@ def patch_load_mast3r(
     act_bits: Optional[int] = None,
     units: Optional[list[str]] = None,
     protect: Optional[list[str]] = None,
+    noise_rel: float = 1e-3,
+    noise_seed: int = 0,
 ) -> None:
     """Monkeypatch mast3r_slam.mast3r_utils.load_mast3r to apply PTQ after load."""
     import mast3r_slam.mast3r_utils as mu
@@ -445,6 +470,9 @@ def patch_load_mast3r(
                 raise ValueError("torchao path currently wired for int8 only")
             info = apply_int8_weight_only_torchao(model, scope=scope)
             logical_bits = 8
+        elif method == "noise":
+            info = apply_weight_noise(model, scope=scope, rel=noise_rel, seed=noise_seed)
+            logical_bits = 16
         else:
             raise ValueError(method)
         info["logical_mb"] = logical_int_mb(model, scope=scope, bits=logical_bits)
