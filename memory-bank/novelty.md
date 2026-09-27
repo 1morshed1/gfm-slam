@@ -19,6 +19,13 @@ Lead instead with:
    at equal K (H3). QVGGT hand-picks blocks (heuristic); we show a proxy-vs-geometry ablation.
 3. **Target = MASt3R-SLAM** (full loop) on commodity Blackwell + energy/frame via NVML (once measured).
 
+> **2026-09-27 own-evidence UPDATE:** wedge #2 (geometry beats the magnitude proxy at matched K)
+> is **not supported**: the paired bootstrap on TUM is not significant, and on EuRoC every W4
+> allocation collapses (geom +96.6%, uniform +78.5%, mag +66.9%). Wedge #1 survives only as a
+> *methodology* (closed-loop ATE evaluation with a fixed back-end, sequence bootstrap plus a
+> perturbation noise floor). Pending the rescue gate (pooled/held-out profiles), the likely
+> framing is a negative/cautionary result. See `activeContext.md`.
+
 ## Direct / near neighbours (verify dates + claims before citing)
 
 | Paper | arXiv | What it does | Why we're still distinct |
