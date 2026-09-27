@@ -90,11 +90,21 @@ PY
   link_seq "$seq"
 }
 
-[ -f "$HF_DIR/vicon_room1.zip" ] && extract_one "$HF_DIR/vicon_room1.zip" V1_02_medium vicon_room1
-[ -f "$HF_DIR/vicon_room2.zip" ] && extract_one "$HF_DIR/vicon_room2.zip" V2_01_easy vicon_room2
+if [ -f "$HF_DIR/vicon_room1.zip" ]; then
+  extract_one "$HF_DIR/vicon_room1.zip" V1_02_medium vicon_room1
+  extract_one "$HF_DIR/vicon_room1.zip" V1_03_difficult vicon_room1
+fi
+if [ -f "$HF_DIR/vicon_room2.zip" ]; then
+  extract_one "$HF_DIR/vicon_room2.zip" V2_01_easy vicon_room2
+  extract_one "$HF_DIR/vicon_room2.zip" V2_02_medium vicon_room2
+  extract_one "$HF_DIR/vicon_room2.zip" V2_03_difficult vicon_room2
+fi
 if [ -f "$HF_DIR/machine_hall.zip" ]; then
   extract_one "$HF_DIR/machine_hall.zip" MH_01_easy machine_hall
   extract_one "$HF_DIR/machine_hall.zip" MH_02_easy machine_hall
+  extract_one "$HF_DIR/machine_hall.zip" MH_03_medium machine_hall
+  extract_one "$HF_DIR/machine_hall.zip" MH_04_difficult machine_hall
+  extract_one "$HF_DIR/machine_hall.zip" MH_05_difficult machine_hall
 fi
 
 echo "EUROC_DOWNLOAD_DONE"
