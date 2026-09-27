@@ -50,40 +50,51 @@ if [ "$NEED_MH" = 1 ] && [ ! -f machine_hall.zip ]; then
 fi
 
 extract_one() {
-  local zip="$1" seq="$2"
+  local zip="$1" seq="$2" room_prefix="$3"
   if [ -d "$DATA/$seq/mav0/cam0/data" ]; then
     echo "SKIP extract $seq"
     link_seq "$seq"
     return 0
   fi
-  echo "Extract $seq from $zip"
-  mkdir -p "$DATA/_tmp_$seq"
-  # archives nest as <seq>/mav0/...
-  unzip -qo "$zip" "${seq}/*" -d "$DATA/_tmp_$seq" || \
-    unzip -qo "$zip" "*/${seq}/*" -d "$DATA/_tmp_$seq"
-  if [ -d "$DATA/_tmp_$seq/$seq/mav0" ]; then
-    mv "$DATA/_tmp_$seq/$seq" "$DATA/$seq"
-  elif [ -d "$DATA/_tmp_$seq/mav0" ]; then
-    mkdir -p "$DATA/$seq"
-    mv "$DATA/_tmp_$seq/mav0" "$DATA/$seq/"
-  else
-    # find mav0
-    found=$(find "$DATA/_tmp_$seq" -type d -name mav0 | head -1)
-    [ -n "$found" ] || { echo "FATAL: mav0 not found for $seq"; exit 1; }
-    mkdir -p "$DATA/$seq"
-    mv "$found" "$DATA/$seq/"
-  fi
-  rm -rf "$DATA/_tmp_$seq"
-  test -d "$DATA/$seq/mav0/cam0/data" || { echo "FATAL: bad extract $seq"; exit 1; }
+  echo "Extract nested $seq from $zip"
+  python3 - <<PY
+import zipfile, shutil
+from pathlib import Path
+zip_path = Path("$zip")
+seq = "$seq"
+room = "$room_prefix"
+DATA = Path("$DATA")
+inner_name = f"{room}/{seq}/{seq}.zip"
+dest = DATA / seq
+tmp = DATA / f"_tmp_{seq}"
+if tmp.exists():
+    shutil.rmtree(tmp)
+tmp.mkdir()
+with zipfile.ZipFile(zip_path) as outer:
+    data = outer.read(inner_name)
+inner = DATA / f"_{seq}.zip"
+inner.write_bytes(data)
+with zipfile.ZipFile(inner) as zf:
+    zf.extractall(tmp)
+inner.unlink(missing_ok=True)
+mavs = [p for p in tmp.rglob("mav0") if p.is_dir()]
+assert mavs, f"no mav0 for {seq}"
+dest.mkdir(parents=True, exist_ok=True)
+if (dest / "mav0").exists():
+    shutil.rmtree(dest / "mav0")
+shutil.move(str(mavs[0]), str(dest / "mav0"))
+shutil.rmtree(tmp, ignore_errors=True)
+assert (dest / "mav0/cam0/data").is_dir()
+print(f"OK {seq}")
+PY
   link_seq "$seq"
-  echo "OK $seq"
 }
 
-[ -f "$HF_DIR/vicon_room1.zip" ] && extract_one "$HF_DIR/vicon_room1.zip" V1_02_medium
-[ -f "$HF_DIR/vicon_room2.zip" ] && extract_one "$HF_DIR/vicon_room2.zip" V2_01_easy
+[ -f "$HF_DIR/vicon_room1.zip" ] && extract_one "$HF_DIR/vicon_room1.zip" V1_02_medium vicon_room1
+[ -f "$HF_DIR/vicon_room2.zip" ] && extract_one "$HF_DIR/vicon_room2.zip" V2_01_easy vicon_room2
 if [ -f "$HF_DIR/machine_hall.zip" ]; then
-  extract_one "$HF_DIR/machine_hall.zip" MH_01_easy
-  extract_one "$HF_DIR/machine_hall.zip" MH_02_easy
+  extract_one "$HF_DIR/machine_hall.zip" MH_01_easy machine_hall
+  extract_one "$HF_DIR/machine_hall.zip" MH_02_easy machine_hall
 fi
 
 echo "EUROC_DOWNLOAD_DONE"

@@ -1,0 +1,49 @@
+{
+  "exp_id": "20260924-euroc-shortlist-fp16",
+  "timestamp": "2026-09-24T23:42:50+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "euroc_shortlist_5",
+  "metrics": {
+    "ate_rmse_per_seq_m": {
+      "V1_01_easy": 0.039528,
+      "MH_01_easy": 0.022714,
+      "MH_02_easy": 0.017051,
+      "V1_02_medium": 0.019005,
+      "V2_01_easy": 0.020389
+    },
+    "ate_rmse_mean_m": 0.0237374,
+    "n_seqs": 5,
+    "align": "sim3",
+    "seqs": [
+      "V1_01_easy",
+      "MH_01_easy",
+      "MH_02_easy",
+      "V1_02_medium",
+      "V2_01_easy"
+    ]
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "none"
+  }
+}

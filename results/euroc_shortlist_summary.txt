@@ -1,0 +1,35 @@
+EUROC_SHORTLIST_START 2026-09-24T23:18:10+00:00
+==> fp16 V1_01_easy
+  V1_01_easy rmse=0.039528
+==> fp16 MH_01_easy
+  MH_01_easy rmse=0.022714
+==> fp16 MH_02_easy
+  MH_02_easy rmse=0.017051
+==> fp16 V1_02_medium
+  V1_02_medium rmse=0.019005
+==> fp16 V2_01_easy
+  V2_01_easy rmse=0.020389
+MODE=fp16 mean=0.023737
+==> fp8 V1_01_easy
+  V1_01_easy rmse=0.036602
+==> fp8 MH_01_easy
+  MH_01_easy rmse=0.031330
+==> fp8 MH_02_easy
+  MH_02_easy rmse=0.022470
+==> fp8 V1_02_medium
+  V1_02_medium rmse=0.017633
+==> fp8 V2_01_easy
+  V2_01_easy rmse=0.029178
+MODE=fp8 mean=0.027443 vs_fp16=+15.6%
+==> w4_greedy V1_01_easy
+  V1_01_easy rmse=0.046653
+==> w4_greedy MH_01_easy
+  MH_01_easy rmse=0.051783
+==> w4_greedy MH_02_easy
+  MH_02_easy rmse=0.056430
+==> w4_greedy V1_02_medium
+  V1_02_medium rmse=0.031188
+==> w4_greedy V2_01_easy
+  V2_01_easy rmse=0.047277
+MODE=w4_greedy mean=0.046666 vs_fp16=+96.6%
+EUROC_SHORTLIST_DONE 2026-09-25T00:27:16+00:00

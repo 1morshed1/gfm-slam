@@ -15,12 +15,12 @@
 
 ## Current phase
 
-Responding to review: **Pri-1 multi-seed** (H3 + K-sweep) on GPU-2; **EuRoC** download via HF continues on CPU.
+**Multi-seed + EuRoC shortlist DONE (2026-09-25). GPU-2 idle.** Results are sobering:
 
-### In flight
-- `scripts/run_multiseed_h3_ksweep.sh` — seeds 0,1,2; configs FP16/FP8/W4u/mag-K7/geom-K{3,5,7,9,11}
-- `scripts/eval_ate.py` — evo wrapper (no longer a stub)
-- EuRoC HF room zips → then `run_euroc_shortlist.sh`
+- **Seeds give ~0 std** (MASt3R-SLAM `single_thread` is deterministic): seed repeats do NOT measure noise. Need a different uncertainty estimate (per-sequence bootstrap / perturbation).
+- **Per-seq paired bootstrap on TUM (9 seqs):** geom-K7 vs mag-K7 −1.4% [−11.1, +8.1] (5/9 wins); geom-K7 vs uniform −4.4% [−12.8, +5.3] (7/9); K9 vs K11 −5.8% [−12.5, +1.1]. **None significant.**
+- **EuRoC 5-seq:** FP16 0.0237; FP8 **+15.6%**; W4 geom-K7 (TUM-fit) **+96.6%**. Transfer fails; uniform/mag not run on EuRoC yet.
+- EXPs: `results/20260924-multiseed-*.json`, `results/20260924-euroc-shortlist-*.json`
 
 ### Manuscript
 - §6.6 U-shape / over-protection **softened** pending error bars

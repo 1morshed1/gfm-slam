@@ -1,0 +1,59 @@
+{
+  "exp_id": "20260924-euroc-shortlist-fp8",
+  "timestamp": "2026-09-24T23:58:00+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": 0,
+  "dataset": "euroc_shortlist_5",
+  "metrics": {
+    "ate_rmse_per_seq_m": {
+      "V1_01_easy": 0.036602,
+      "MH_01_easy": 0.03133,
+      "MH_02_easy": 0.02247,
+      "V1_02_medium": 0.017633,
+      "V2_01_easy": 0.029178
+    },
+    "ate_rmse_mean_m": 0.0274426,
+    "n_seqs": 5,
+    "align": "sim3",
+    "seqs": [
+      "V1_01_easy",
+      "MH_01_easy",
+      "MH_02_easy",
+      "V1_02_medium",
+      "V2_01_easy"
+    ],
+    "fp16_ate_mean_m": 0.0237374,
+    "ate_rel_change_mean_vs_fp16": 0.15609123155863752,
+    "ate_rel_change_per_seq_vs_fp16": {
+      "V1_01_easy": -0.07402347702894146,
+      "MH_01_easy": 0.3793255261072464,
+      "MH_02_easy": 0.3178112720661545,
+      "V1_02_medium": -0.07219152854511979,
+      "V2_01_easy": 0.43106577075874236
+    }
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "method": "fake_fp8_e4m3",
+    "scope": "trunk"
+  }
+}

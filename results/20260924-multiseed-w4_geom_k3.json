@@ -1,0 +1,92 @@
+{
+  "exp_id": "20260924-multiseed-w4_geom_k3",
+  "timestamp": "2026-09-24T23:17:40+0000",
+  "device": "rig",
+  "cuda_visible_devices": "2",
+  "torch": "2.11.0+cu128",
+  "cuda": "12.8",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "driver": "580.178.04",
+  "quant_libs": {
+    "bitsandbytes": "0.50.2",
+    "gptqmodel": null,
+    "awq": null,
+    "torchao": "0.18.0",
+    "modelopt": "0.46.1"
+  },
+  "python": "3.10.21",
+  "config_path": null,
+  "config_hash": null,
+  "seed": null,
+  "dataset": "tum_fr1_all",
+  "metrics": {
+    "ate_rmse_mean_m": 0.03372267,
+    "ate_rmse_std_m": 0.0,
+    "ate_rmse_per_seed_m": [
+      0.03372267,
+      0.03372267,
+      0.03372267
+    ],
+    "per_seed": {
+      "0": {
+        "mean_ate_m": 0.03372267,
+        "per_seq": {
+          "rgbd_dataset_freiburg1_360": 0.048339,
+          "rgbd_dataset_freiburg1_desk": 0.017264,
+          "rgbd_dataset_freiburg1_desk2": 0.029189,
+          "rgbd_dataset_freiburg1_floor": 0.028399,
+          "rgbd_dataset_freiburg1_plant": 0.015831,
+          "rgbd_dataset_freiburg1_room": 0.07174,
+          "rgbd_dataset_freiburg1_rpy": 0.023557,
+          "rgbd_dataset_freiburg1_teddy": 0.060518,
+          "rgbd_dataset_freiburg1_xyz": 0.008667
+        }
+      },
+      "1": {
+        "mean_ate_m": 0.03372267,
+        "per_seq": {
+          "rgbd_dataset_freiburg1_360": 0.048339,
+          "rgbd_dataset_freiburg1_desk": 0.017264,
+          "rgbd_dataset_freiburg1_desk2": 0.029189,
+          "rgbd_dataset_freiburg1_floor": 0.028399,
+          "rgbd_dataset_freiburg1_plant": 0.015831,
+          "rgbd_dataset_freiburg1_room": 0.07174,
+          "rgbd_dataset_freiburg1_rpy": 0.023557,
+          "rgbd_dataset_freiburg1_teddy": 0.060518,
+          "rgbd_dataset_freiburg1_xyz": 0.008667
+        }
+      },
+      "2": {
+        "mean_ate_m": 0.03372267,
+        "per_seq": {
+          "rgbd_dataset_freiburg1_360": 0.048339,
+          "rgbd_dataset_freiburg1_desk": 0.017264,
+          "rgbd_dataset_freiburg1_desk2": 0.029189,
+          "rgbd_dataset_freiburg1_floor": 0.028399,
+          "rgbd_dataset_freiburg1_plant": 0.015831,
+          "rgbd_dataset_freiburg1_room": 0.07174,
+          "rgbd_dataset_freiburg1_rpy": 0.023557,
+          "rgbd_dataset_freiburg1_teddy": 0.060518,
+          "rgbd_dataset_freiburg1_xyz": 0.008667
+        }
+      }
+    },
+    "n_runs": 3,
+    "n_seqs": 9
+  },
+  "system": "mast3r-slam",
+  "quant": {
+    "config": "w4_geom_k3",
+    "tag": "w4_geom_k3"
+  },
+  "n_runs": 3,
+  "seeds": [
+    0,
+    1,
+    2
+  ]
+}

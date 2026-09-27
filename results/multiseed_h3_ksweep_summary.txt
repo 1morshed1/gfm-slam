@@ -1,0 +1,41 @@
+MULTISEED_START 2026-09-24T12:40:05+00:00 seeds=0 1 2
+==> cfg=fp16 seed=0
+==> cfg=fp16 seed=1
+==> cfg=fp16 seed=2
+==> cfg=fp8_trunk seed=0
+==> cfg=fp8_trunk seed=1
+==> cfg=fp8_trunk seed=2
+==> cfg=w4_trunk seed=0
+==> cfg=w4_trunk seed=1
+==> cfg=w4_trunk seed=2
+==> cfg=w4_mag_k7 seed=0
+==> cfg=w4_mag_k7 seed=1
+==> cfg=w4_mag_k7 seed=2
+==> cfg=w4_geom_k3 seed=0
+==> cfg=w4_geom_k3 seed=1
+==> cfg=w4_geom_k3 seed=2
+==> cfg=w4_geom_k5 seed=0
+==> cfg=w4_geom_k5 seed=1
+==> cfg=w4_geom_k5 seed=2
+==> cfg=w4_geom_k7 seed=0
+==> cfg=w4_geom_k7 seed=1
+==> cfg=w4_geom_k7 seed=2
+==> cfg=w4_geom_k9 seed=0
+==> cfg=w4_geom_k9 seed=1
+==> cfg=w4_geom_k9 seed=2
+==> cfg=w4_geom_k11 seed=0
+==> cfg=w4_geom_k11 seed=1
+==> cfg=w4_geom_k11 seed=2
+
+config mean_m std_m vs_fp16
+------------------------------------------------
+fp16             0.029553 0.000025 +0.0%
+fp8              0.029413 0.000000 -0.5%
+w4_uniform       0.033323 0.000001 +12.8%
+w4_mag_k7        0.032760 0.000000 +10.9%
+w4_geom_k3       0.033723 0.000000 +14.1%
+w4_geom_k5       0.031975 0.000000 +8.2%
+w4_geom_k7       0.031630 0.000000 +7.0%
+w4_geom_k9       0.031135 0.000000 +5.4%
+w4_geom_k11      0.033535 0.000000 +13.5%
+MULTISEED_DONE 2026-09-24T23:17:41+00:00
