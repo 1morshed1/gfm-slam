@@ -1,0 +1,104 @@
+datasets/tum/rgbd_dataset_freiburg1_floor/
+{'use_calib': True, 'single_thread': True, 'dataset': {'subsample': 2, 'img_downsample': 1, 'center_principle_point': True}, 'matching': {'max_iter': 10, 'lambda_init': 1e-08, 'convergence_thresh': 1e-06, 'dist_thresh': 0.1, 'radius': 3, 'dilation_max': 5}, 'tracking': {'min_match_frac': 0.05, 'max_iters': 50, 'C_conf': 0.0, 'Q_conf': 1.5, 'rel_error': 0.001, 'delta_norm': 0.001, 'huber': 1.345, 'match_frac_thresh': 0.333, 'sigma_ray': 0.003, 'sigma_dist': 10.0, 'sigma_pixel': 1.0, 'sigma_depth': 10.0, 'sigma_point': 0.05, 'pixel_border': -10, 'depth_eps': 1e-06, 'filtering_mode': 'weighted_pointmap', 'filtering_score': 'median'}, 'local_opt': {'pin': 1, 'window_size': 1000000.0, 'C_conf': 0.0, 'Q_conf': 1.5, 'min_match_frac': 0.1, 'pixel_border': -10, 'depth_eps': 1e-06, 'max_iters': 10, 'sigma_ray': 0.003, 'sigma_dist': 10.0, 'sigma_pixel': 1.0, 'sigma_depth': 10.0, 'sigma_point': 0.05, 'delta_norm': 1e-08, 'use_cuda': True}, 'retrieval': {'k': 3, 'min_thresh': 0.005}, 'reloc': {'min_match_frac': 0.3, 'strict': True}, 'inherit': 'config/base.yaml'}
+... loading model from checkpoints/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth
+instantiating : AsymmetricMASt3R(enc_depth=24, dec_depth=12, enc_embed_dim=1024, dec_embed_dim=768, enc_num_heads=16, dec_num_heads=12, pos_embed='RoPE100',img_size=(512, 512), head_type='catmlp+dpt', output_mode='pts3d+desc24', depth_mode=('exp', -inf, inf), conf_mode=('exp', 1, inf), patch_embed_cls='PatchEmbedDust3R', two_confs=True, desc_conf_mode=('exp', 0, inf), landscape_only=False)
+<All keys matched successfully>
+Loading retrieval model from checkpoints/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth
+/office/dev_workspace/morshed/projects/gfm-slam/ext/MASt3R-SLAM/mast3r_slam/frame.py:116: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  uimg = torch.from_numpy(img["unnormalized_img"]) / 255.0
+FPS: 9.213031856240846
+Database retrieval 2 :  {0}
+FPS: 10.056479881345016
+Database retrieval 3 :  {0, 1}
+FPS: 10.116537029065128
+FPS: 10.398586483139656
+FPS: 10.542418294346277
+FPS: 10.664640684358924
+FPS: 10.816032177997517
+Database retrieval 9 :  {2}
+Database retrieval 10 :  {2, 1}
+FPS: 10.816413827213715
+FPS: 10.93550956198211
+FPS: 11.038370637725247
+Database retrieval 13 :  {11, 6}
+FPS: 11.106049614162115
+Database retrieval 14 :  {11, 12}
+Database retrieval 15 :  {11, 13}
+FPS: 11.002832617440298
+Database retrieval 16 :  {13, 14}
+FPS: 11.052371441087047
+Database retrieval 17 :  {14, 6}
+FPS: 10.894535217721012
+Database retrieval 18 :  {16, 7}
+FPS: 10.812055150304886
+Database retrieval 19 :  {17, 14}
+Database retrieval 20 :  {16, 17}
+FPS: 10.816604844566013
+Database retrieval 21 :  {19, 14}
+Database retrieval 22 :  {18, 11}
+FPS: 10.775797781144696
+Database retrieval 23 :  {0, 21}
+Database retrieval 24 :  {0, 1}
+FPS: 10.709194552806366
+Database retrieval 25 :  {0, 1}
+Database retrieval 26 :  {2, 3}
+FPS: 10.689744804764326
+FPS: 10.819932953007838
+Database retrieval 27 :  {24, 1, 23}
+Database retrieval 28 :  {23}
+done
+[W928 02:43:08.076884026 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]
+RESULT fp16 0.024977
+datasets/tum/rgbd_dataset_freiburg1_floor/
+{'use_calib': True, 'single_thread': True, 'dataset': {'subsample': 2, 'img_downsample': 1, 'center_principle_point': True}, 'matching': {'max_iter': 10, 'lambda_init': 1e-08, 'convergence_thresh': 1e-06, 'dist_thresh': 0.1, 'radius': 3, 'dilation_max': 5}, 'tracking': {'min_match_frac': 0.05, 'max_iters': 50, 'C_conf': 0.0, 'Q_conf': 1.5, 'rel_error': 0.001, 'delta_norm': 0.001, 'huber': 1.345, 'match_frac_thresh': 0.333, 'sigma_ray': 0.003, 'sigma_dist': 10.0, 'sigma_pixel': 1.0, 'sigma_depth': 10.0, 'sigma_point': 0.05, 'pixel_border': -10, 'depth_eps': 1e-06, 'filtering_mode': 'weighted_pointmap', 'filtering_score': 'median'}, 'local_opt': {'pin': 1, 'window_size': 1000000.0, 'C_conf': 0.0, 'Q_conf': 1.5, 'min_match_frac': 0.1, 'pixel_border': -10, 'depth_eps': 1e-06, 'max_iters': 10, 'sigma_ray': 0.003, 'sigma_dist': 10.0, 'sigma_pixel': 1.0, 'sigma_depth': 10.0, 'sigma_point': 0.05, 'delta_norm': 1e-08, 'use_cuda': True}, 'retrieval': {'k': 3, 'min_thresh': 0.005}, 'reloc': {'min_match_frac': 0.3, 'strict': True}, 'inherit': 'config/base.yaml'}
+... loading model from checkpoints/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth
+instantiating : AsymmetricMASt3R(enc_depth=24, dec_depth=12, enc_embed_dim=1024, dec_embed_dim=768, enc_num_heads=16, dec_num_heads=12, pos_embed='RoPE100',img_size=(512, 512), head_type='catmlp+dpt', output_mode='pts3d+desc24', depth_mode=('exp', -inf, inf), conf_mode=('exp', 1, inf), patch_embed_cls='PatchEmbedDust3R', two_confs=True, desc_conf_mode=('exp', 0, inf), landscape_only=False)
+<All keys matched successfully>
+[PTQ] applied {'method': 'fake_int4_weight_only_per_channel', 'scope': 'trunk', 'bits': 4, 'act_bits': 16, 'n_linears_quantized': 289, 'logical_mb': 902.114848, 'fp16_mb': 2754.555424}
+Loading retrieval model from checkpoints/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth
+/office/dev_workspace/morshed/projects/gfm-slam/ext/MASt3R-SLAM/mast3r_slam/frame.py:116: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  uimg = torch.from_numpy(img["unnormalized_img"]) / 255.0
+FPS: 8.267018347547934
+Database retrieval 2 :  {0}
+FPS: 9.74012841376646
+Database retrieval 3 :  {0, 1}
+FPS: 10.044300440274391
+FPS: 10.283431555992433
+FPS: 10.720221792145654
+FPS: 10.87788117714142
+FPS: 11.183547742348283
+Database retrieval 9 :  {1, 2}
+Database retrieval 10 :  {2, 1}
+FPS: 11.026316554788709
+FPS: 11.198557850379231
+FPS: 11.25817121195432
+Database retrieval 13 :  {11, 6}
+FPS: 11.244664630790217
+Database retrieval 14 :  {11, 12}
+Database retrieval 15 :  {11, 13}
+FPS: 11.219373484154303
+Database retrieval 16 :  {13, 14}
+FPS: 11.295082803060062
+Database retrieval 17 :  {13, 14}
+FPS: 11.347288053458325
+Database retrieval 18 :  {16, 14}
+Database retrieval 19 :  {0, 7}
+FPS: 11.325812298105385
+Database retrieval 20 :  {17, 18}
+Database retrieval 21 :  {17, 18}
+FPS: 11.235778153844176
+Database retrieval 22 :  {17, 20}
+Database retrieval 23 :  {19, 20}
+FPS: 11.218589796549608
+Database retrieval 24 :  {0, 22}
+Database retrieval 25 :  {0, 1}
+FPS: 11.193797987417216
+Database retrieval 26 :  {0, 1}
+Database retrieval 27 :  {2, 3}
+FPS: 11.123415139427625
+FPS: 11.207775098970455
+Database retrieval 28 :  {24, 25, 1}
+Database retrieval 29 :  {24}
+done
+[W928 02:44:24.170177576 CudaIPCTypes.cpp:16] Producer process has been terminated before all shared CUDA tensors released. See Note [Sharing CUDA tensors]
+RESULT w4 0.023929

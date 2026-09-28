@@ -32,9 +32,14 @@ Pre-registered design (user-approved, 2026-09-27):
 - **Success criterion:** at least one (measure, K) variant beats BOTH uniform and magnitude on held-out seqs, with a paired bootstrap CI excluding 0 at Bonferroni 99.2% (6 variants).
 - **If gate fails:** write the negative-result workshop paper (within-TUM allocation gains not significant; W4 does not transfer under any allocation; FP8 looks free on TUM but costs 15.6% on EuRoC; seeds don't measure noise, so use sequence bootstrap plus a perturbation floor).
 
+### Stage A RESULT (2026-09-28): GATE FAIL
+- Mean cross-dataset Spearman: loi +0.011, loo +0.005 (threshold 0.3). Within TUM: −0.14 / −0.03; within EuRoC: −0.04 / −0.15. Top-7 overlap ≈ chance (expected 1/7).
+- Effects are mostly above each seq's 1e-3 noise floor (18–47 of 49 units > 2× floor), yet idiosyncratic: `dec_blocks2.8` is rank 1 on desk (+26%) and MH_01 (+38%) but *helps* when quantized on floor (−11%), 360 and V1_01. Protecting only it under W4 on desk is −31% (worse than uniform) → strongly non-additive.
+- Reading: closed-loop per-unit ATE sensitivity is not a stable property of a unit; the trajectory responds to W4-scale perturbations chaotically. `results/profile_gate.json`, `results/profiles/`.
+- Ops: capping `OMP_NUM_THREADS=12` per stream gives identical ATE (verified on TUM floor, FP16 + uniform W4) and cut host load from ~200 to ~20 (48 cores). GPU-1 went from 1% to 88% utilization.
+
 ## Next action
-1. When the pilot finishes: run `python scripts/profile_gate.py`, report the correlation table and noise-floor counts to the user.
-2. PASS → build the Stage B driver and LOSO evaluator. FAIL → negative-result manuscript rewrite.
+1. Per pre-registration: **negative-result workshop paper**. Rewrite the manuscript around the findings (not significant within TUM; W4 does not transfer under any allocation; per-unit sensitivity profiles do not agree across sequences; FP8 cost on EuRoC; methodology: seeds ≠ noise, use sequence bootstrap plus a perturbation floor). Awaiting user go-ahead.
 
 ## Gate ledger
 - [x] eval_ate.py implemented
@@ -42,6 +47,6 @@ Pre-registered design (user-approved, 2026-09-27):
 - [x] EuRoC 5-seq transfer (fails) + matched W4 baselines (all collapse)
 - [x] Perturbation noise floor
 - [x] All 11 EuRoC seqs extracted (`data/euroc/`, symlinked into `ext/MASt3R-SLAM/datasets/euroc/`)
-- [~] Rescue Stage A pilot + gate — running
-- [ ] Stage B / LOSO, or negative-result rewrite
+- [x] Rescue Stage A pilot + gate — **FAIL** (Stage B not run)
+- [ ] Negative-result manuscript rewrite
 - [ ] Venue reframe (after gate)

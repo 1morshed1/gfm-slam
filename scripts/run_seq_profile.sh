@@ -25,6 +25,9 @@ ATE_FILE="$RESULTS/profiles/profile_${MEASURE}_${SEQ}.txt"
 : > "$ATE_FILE"
 
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-1}"
+# default (all cores) x 3 streams oversubscribes the 48-core host; ATE verified identical at 12
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-12}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-12}"
 export LD_LIBRARY_PATH="/office/dev_workspace/morshed/miniconda3/envs/edgeslam/lib/python3.10/site-packages/torch/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export PYTHONPATH="$ROOT/scripts${PYTHONPATH:+:$PYTHONPATH}"
 export PYTHONUNBUFFERED=1

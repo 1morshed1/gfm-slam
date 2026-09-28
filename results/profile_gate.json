@@ -1,0 +1,152 @@
+{
+  "threshold": 0.3,
+  "measures": {
+    "loi": {
+      "complete_seqs": [
+        "rgbd_dataset_freiburg1_desk",
+        "rgbd_dataset_freiburg1_360",
+        "rgbd_dataset_freiburg1_floor",
+        "MH_01_easy",
+        "V1_01_easy"
+      ],
+      "pairs": {
+        "rgbd_dataset_freiburg1_desk|rgbd_dataset_freiburg1_360": {
+          "rho": -0.12627873164138725,
+          "top7_overlap": 0,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_desk|rgbd_dataset_freiburg1_floor": {
+          "rho": -0.17423913881023737,
+          "top7_overlap": 1,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_desk|MH_01_easy": {
+          "rho": -0.0788795632798322,
+          "top7_overlap": 1,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_desk|V1_01_easy": {
+          "rho": -0.09648205314499526,
+          "top7_overlap": 2,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_360|rgbd_dataset_freiburg1_floor": {
+          "rho": -0.10877551020408163,
+          "top7_overlap": 1,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_360|MH_01_easy": {
+          "rho": -0.04530612244897959,
+          "top7_overlap": 2,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_360|V1_01_easy": {
+          "rho": -0.06275510204081633,
+          "top7_overlap": 0,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_floor|MH_01_easy": {
+          "rho": 0.03918367346938775,
+          "top7_overlap": 1,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_floor|V1_01_easy": {
+          "rho": 0.31316326530612243,
+          "top7_overlap": 3,
+          "kind": "cross"
+        },
+        "MH_01_easy|V1_01_easy": {
+          "rho": -0.04326530612244898,
+          "top7_overlap": 2,
+          "kind": "euroc"
+        }
+      },
+      "mean_rho": {
+        "tum": -0.13643112688523543,
+        "euroc": -0.04326530612244898,
+        "cross": 0.011487349643481134
+      },
+      "n_units_above_2x_noise": {
+        "rgbd_dataset_freiburg1_desk": 33,
+        "rgbd_dataset_freiburg1_360": 18,
+        "rgbd_dataset_freiburg1_floor": 47,
+        "MH_01_easy": 41,
+        "V1_01_easy": 18
+      }
+    },
+    "loo": {
+      "complete_seqs": [
+        "rgbd_dataset_freiburg1_desk",
+        "rgbd_dataset_freiburg1_360",
+        "rgbd_dataset_freiburg1_floor",
+        "MH_01_easy",
+        "V1_01_easy"
+      ],
+      "pairs": {
+        "rgbd_dataset_freiburg1_desk|rgbd_dataset_freiburg1_360": {
+          "rho": 0.11204653313222489,
+          "top7_overlap": 2,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_desk|rgbd_dataset_freiburg1_floor": {
+          "rho": -0.11235267120089218,
+          "top7_overlap": 0,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_desk|MH_01_easy": {
+          "rho": -0.12475126298191706,
+          "top7_overlap": 0,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_desk|V1_01_easy": {
+          "rho": 0.15674269115764794,
+          "top7_overlap": 1,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_360|rgbd_dataset_freiburg1_floor": {
+          "rho": -0.09428571428571428,
+          "top7_overlap": 2,
+          "kind": "tum"
+        },
+        "rgbd_dataset_freiburg1_360|MH_01_easy": {
+          "rho": -0.007448979591836735,
+          "top7_overlap": 2,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_360|V1_01_easy": {
+          "rho": 0.062448979591836734,
+          "top7_overlap": 1,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_floor|MH_01_easy": {
+          "rho": 0.023265306122448978,
+          "top7_overlap": 2,
+          "kind": "cross"
+        },
+        "rgbd_dataset_freiburg1_floor|V1_01_easy": {
+          "rho": -0.07806122448979591,
+          "top7_overlap": 2,
+          "kind": "cross"
+        },
+        "MH_01_easy|V1_01_easy": {
+          "rho": -0.15224489795918364,
+          "top7_overlap": 2,
+          "kind": "euroc"
+        }
+      },
+      "mean_rho": {
+        "tum": -0.031530617451460526,
+        "euroc": -0.15224489795918364,
+        "cross": 0.005365918301397324
+      },
+      "n_units_above_2x_noise": {
+        "rgbd_dataset_freiburg1_desk": 44,
+        "rgbd_dataset_freiburg1_360": 28,
+        "rgbd_dataset_freiburg1_floor": 40,
+        "MH_01_easy": 43,
+        "V1_01_easy": 30
+      }
+    }
+  },
+  "gate_pass": false
+}
