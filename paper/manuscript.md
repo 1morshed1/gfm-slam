@@ -12,7 +12,7 @@
 
 Feed-forward SLAM systems such as MASt3R-SLAM spend most of their compute in a large geometric foundation model (GFM) trunk, making that trunk the natural target for quantization. A growing line of task-aware mixed-precision work (QVGGT, Mix-QVLA) allocates bits by *downstream* sensitivity, on the premise that some units matter more than others and that this ranking is a property of the model one can measure once and reuse. We test that premise directly for **closed-loop SLAM**: we measure per-unit W4 sensitivity as the change in absolute trajectory error (ATE) with the classical pose-graph back-end frozen in FP32, and ask whether the resulting protect sets transfer.
 
-They do not, and the reason is instructive. On TUM RGB-D fr1 (9 sequences), protecting the $K{=}7$ units with highest ATE sensitivity fit on one sequence lowers *mean* degradation from $+12.8\%$ (uniform W4) to $+7.0\%$, but a per-sequence paired bootstrap shows this gap — and the gap over a magnitude-L1 proxy — is **not statistically distinguishable from zero**. On EuRoC (5 sequences) **every** W4 variant collapses (uniform $+78.5\%$, magnitude $+66.9\%$, TUM-fit geometry $+96.6\%$): allocation does not help out of distribution. A pre-registered rank-correlation gate then explains why: per-unit sensitivity profiles are **uncorrelated across sequences** (mean cross-dataset Spearman $+0.01$; within-TUM $-0.14$; top-7 overlap at chance). This is not measurement noise — a perturbation-based noise floor (multiplicative weight noise, $20\times$ below FP8 rounding) shows 18–47 of 49 units have effects above $2\times$ their sequence's floor, yet the unit that dominates one sequence is near-inert on another (`dec_blocks2.8`: rank 1 on desk, rank 47–49 on floor/360/V1_01). We conclude that closed-loop quantization sensitivity is a property of the *sequence*, not of the *unit*, at W4-scale perturbations. Two secondary findings sharpen the picture: FP8-e4m3 is near-lossless on TUM ($-0.5\%$, $2\times$ weight memory) but costs $+15.6\%$ on EuRoC, so single-dataset compression results flatter; and because MASt3R-SLAM is deterministic (seed std $\approx 0$), seeds do not measure uncertainty — evaluation needs a sequence-level bootstrap plus a perturbation floor. We offer the instability finding, the methodology, and the negative transfer result as guidance for the compression-for-SLAM literature.
+They do not, and the reason is instructive. On TUM RGB-D fr1 (9 sequences), protecting the $K{=}7$ units with highest ATE sensitivity fit on one sequence lowers *mean* degradation from $+12.8\%$ (uniform W4) to $+7.0\%$, but a per-sequence paired bootstrap shows this gap — and the gap over a magnitude-L1 proxy — is **not statistically distinguishable from zero**. On EuRoC (5 sequences) **every** W4 variant collapses (uniform $+78.5\%$, magnitude $+66.9\%$, TUM-fit geometry $+96.6\%$): allocation does not help out of distribution. A rank-correlation gate, declared and committed to git before its results were in, then explains why: per-unit sensitivity profiles are **uncorrelated across sequences** (mean cross-dataset Spearman $+0.01$; within-TUM $-0.14$; top-7 overlap at chance). This is not measurement noise — a perturbation-based noise floor (multiplicative weight noise, $20\times$ below FP8 rounding) shows 18–47 of 49 units have effects above $2\times$ their sequence's floor, yet the unit that dominates one sequence is harmless or even helpful to quantize on another (`dec_blocks2.8`: rank 1 on desk, +26%; rank 47–49 on floor/360/V1_01, where quantizing it *lowers* ATE, e.g. −11% on floor). We conclude that closed-loop quantization sensitivity is a property of the *sequence*, not of the *unit*, at W4-scale perturbations. Two secondary findings sharpen the picture: FP8-e4m3 is near-lossless on TUM ($-0.5\%$, $2\times$ weight memory) but costs $+15.6\%$ on EuRoC, so single-dataset compression results flatter; and because MASt3R-SLAM is deterministic (seed std $\approx 0$), seeds do not measure uncertainty — evaluation needs a sequence-level bootstrap plus a perturbation floor. We offer the instability finding, the methodology, and the negative transfer result as guidance for the compression-for-SLAM literature.
 
 ---
 
@@ -22,15 +22,15 @@ Geometric foundation models have moved from offline reconstruction into online f
 
 A now-standard idea is **task-aware mixed precision**: not all units are equally fragile, so measure a downstream sensitivity per unit and keep the fragile ones in higher precision. QVGGT allocates by pose-head AUC; Mix-QVLA by task evidence in a VLA. The unstated assumption behind all of it is that per-unit sensitivity is a *stable property of the model* — something you can profile on one workload and reuse on another. We set out to build a stronger version of this idea for SLAM: allocate bits by the metric users actually care about, closed-loop ATE, with the classical back-end frozen in FP32 so any change is attributable to trunk precision, and beat a magnitude proxy at matched budget.
 
-**The idea failed, and the way it failed is the contribution.** The protect set did not transfer across datasets; before writing that off as an allocation-quality problem we ran a pre-registered test of the underlying assumption and found it false. Per-unit closed-loop sensitivity does not agree across sequences — not merely across TUM vs EuRoC, but between two sequences of the *same* dataset. The signal the entire approach depends on is sequence-specific.
+**The idea failed, and the way it failed is the contribution.** The protect set did not transfer across datasets; before writing that off as an allocation-quality problem we ran a pre-declared test of the underlying assumption and found it false. Per-unit closed-loop sensitivity does not agree across sequences — not merely across TUM vs EuRoC, but between two sequences of the *same* dataset. The signal the entire approach depends on is sequence-specific.
 
 We report this as a negative result because it is a real, generalizable finding about the system, and because it explains a pattern others will hit: any protect set fit on one workload will look good there and fail elsewhere, and single-dataset compression numbers (including our own near-lossless FP8 on TUM) systematically overstate robustness.
 
 **Contributions.**
 
-1. **Sensitivity does not transfer (main result).** Under a pre-registered rank-correlation gate, per-unit W4 ATE-sensitivity profiles are uncorrelated across sequences: mean cross-dataset Spearman $+0.01$, within-TUM $-0.14$, top-7 protect-set overlap at chance. The unit that dominates one sequence is near-inert on others. (§6.3)
+1. **Sensitivity does not transfer (main result).** Under a pre-declared rank-correlation gate, per-unit W4 ATE-sensitivity profiles are uncorrelated across sequences: mean cross-dataset Spearman $+0.01$, within-TUM $-0.14$, top-7 protect-set overlap at chance. The unit that dominates one sequence is near-inert on others. (§6.3)
 2. **Allocation does not beat baselines out of distribution.** On TUM the geometry-vs-magnitude and geometry-vs-uniform gaps are not significant across sequences (paired bootstrap); on EuRoC all W4 variants collapse ($+67\%$ to $+97\%$), allocation included. (§6.2, §6.4)
-3. **It is real, not noise.** A perturbation-based noise floor separates genuine per-unit effects (18–47 of 49 units above $2\times$ floor) from run-to-run variation, and confirms the transfer failure is sequence-specific sensitivity, not measurement error. (§6.5)
+3. **It is not small-perturbation noise** *(W4-scale retest pending, §6.5)*. A perturbation-based noise floor separates per-unit effects (18–47 of 49 units above $2\times$ floor) from small-perturbation run-to-run variation. A within-sequence retest at W4 scale decides whether the transfer failure reflects sequence-specific sensitivity or effects that are not reproducible even on the same sequence. (§6.5)
 4. **Secondary: FP8 flatters on a single dataset.** FP8-e4m3 is near-lossless on TUM ($-0.5\%$) but costs $+15.6\%$ on EuRoC — a caution against reporting compression robustness from one dataset. (§6.1, §6.4)
 5. **Methodology for deterministic SLAM.** MASt3R-SLAM is deterministic (seed std $\approx 0$), so seeds do not estimate uncertainty; we use a per-sequence paired bootstrap and a multiplicative-weight-noise floor instead, and recommend both for compression-for-SLAM evaluation. (§5, §6.5)
 
@@ -68,13 +68,13 @@ The two measures probe additive vs. interaction-dominated regimes respectively; 
 
 ---
 
-## 4. Method: A Pre-Registered Transfer Test
+## 4. Method: A Pre-Declared Transfer Test
 
-Because our initial single-sequence result (geometry beats magnitude by 3.6% on TUM mean) proved fragile once error bars were added (§6.2), we pre-registered the transfer question before spending further compute.
+Because our initial single-sequence result (geometry beats magnitude by 3.6% on TUM mean) proved fragile once error bars were added (§6.2), we fixed the transfer test, its threshold, and the stopping rule before spending further compute. "Pre-declared" here means committed to the project's git history before any gate results existed; it was not filed with an external registry.
 
 **Stage A gate (pre-declared).** Profile all 49 units on 5 stable sequences (TUM desk/360/floor, EuRoC MH_01/V1_01) under both measures, and compute pairwise Spearman rank correlation of the per-unit scores. **PASS** iff, for either measure, the mean cross-dataset (TUM×EuRoC) Spearman $\geq 0.3$. Only on PASS would we proceed to Stage B (pooled leave-one-sequence-out allocation over 20 sequences, success = beat both uniform and magnitude on held-out sequences at Bonferroni-corrected 99.2%). Gate and criterion are in `scripts/profile_gate.py` and `memory-bank/activeContext.md`, committed before the pilot finished.
 
-**Outcome.** The gate **failed decisively** (§6.3). Per the pre-registration, Stage B was not run; this manuscript reports the negative result. Pre-registration matters here specifically because a post-hoc reader could otherwise suspect the null was reached by insufficient tuning — the criterion and stopping rule were fixed in advance.
+**Outcome.** The gate **failed decisively** (§6.3). Per the pre-declared rule, Stage B was not run; this manuscript reports the negative result. Fixing the rule in advance matters here specifically because a post-hoc reader could otherwise suspect the null was reached by insufficient tuning — the criterion and stopping rule were fixed in advance.
 
 ---
 
@@ -83,7 +83,7 @@ Because our initial single-sequence result (geometry beats magnitude by 3.6% on 
 | Item | Setting |
 |------|---------|
 | Rig | RTX PRO 6000 Blackwell, sm_120, CUDA 12.8, torch 2.11.0+cu128 |
-| GPU pin | GPU-2 (Track-A ladder, through 2026-09-26); GPU-1 (rescue profiling, 2026-09-27, `OMP_NUM_THREADS=12`/stream; ATE verified identical to uncapped, `results/thread_check.log`) |
+| GPU pin | GPU-2 (Track-A ladder, multi-seed, EuRoC shortlist, through 2026-09-26); GPU-1 (EuRoC W4 baselines, noise floor and Stage A profiling, from 2026-09-27). Same GPU model; the pipeline is deterministic. `OMP_NUM_THREADS=12` per stream was applied partway through Stage A; ATE is identical with and without the cap (`results/thread_check.log`). |
 | System | MASt3R-SLAM, `single_thread` (deterministic) |
 | Data | TUM RGB-D fr1 (9 seqs); EuRoC (5-seq shortlist for transfer; 11 seqs extracted) |
 | Metric | ATE RMSE (Sim3 align, evo) |
@@ -123,16 +123,16 @@ Every CI spans zero. The earlier "geometry beats magnitude by 3.6%" mean-headlin
 
 ### 6.3 Main result: per-unit sensitivity does not transfer
 
-Pre-registered Stage A gate (`results/profile_gate.json`). Mean pairwise Spearman of per-unit scores:
+Pre-declared Stage A gate (`results/profile_gate.json`). Mean pairwise Spearman of per-unit scores:
 
 | measure | TUM×EuRoC (gate) | within TUM | within EuRoC |
 |---------|-----------------:|-----------:|-------------:|
 | quantize-one (`loi`) | **+0.011** | −0.136 | −0.043 |
 | protect-one (`loo`) | **+0.005** | −0.032 | −0.152 |
 
-The gate required $\geq 0.3$ cross-dataset; observed correlations are $\approx 0$ for both measures, and are *slightly negative within a single dataset*. Top-7 protect-set overlap between sequences ranges 0–3 of 7 — chance level for choosing 7 of 49. **The gate fails decisively; no pooled or held-out profile can produce a transferable protect set.**
+The gate required $\geq 0.3$ cross-dataset; observed correlations are $\approx 0$ for both measures, including between sequences of the same dataset. (With 49 units, a single Spearman estimate carries roughly $\pm 0.28$ uncertainty, so the small negative within-dataset means should not be read as anti-correlation.) Top-7 protect-set overlap between sequences ranges 0–3 of 7; about 1 of 7 is expected by chance. **The gate fails decisively.** We did not test a pooled profile directly (Stage B was not run). But when individual profiles are this weakly correlated, averaging them cannot yield a ranking that predicts a new sequence, so we infer that no pooled or held-out profile would produce a transferable protect set.
 
-The mechanism is visible in a single unit. `dec_blocks2.8` — the top-sensitivity unit on `desk`, which anchored our original protect set — ranks **1st on desk, 3rd on MH_01, but 47th–49th of 49 on 360, floor, and V1_01**, where quantizing it is among the *least* harmful choices. Under the protect-one measure the interaction is even starker: restoring only `dec_blocks2.8` to FP16 with the rest at W4 makes `desk` **31% worse** than uniform W4, i.e. effects are non-additive. Sensitivity is a property of the *trajectory being run*, not of the unit.
+The mechanism is visible in a single unit. `dec_blocks2.8` — the top-sensitivity unit on `desk`, which anchored our original protect set — ranks **1st on desk (+26%), 3rd on MH_01 (+38%), but 47th–49th of 49 on 360, floor, and V1_01**, where quantizing it slightly *lowers* ATE (−4% on 360 and V1_01, −11% on floor). Under the protect-one measure the interaction is even starker: restoring only `dec_blocks2.8` to FP16 with the rest at W4 makes `desk` **31% worse** than uniform W4, i.e. effects are non-additive. Sensitivity is a property of the *trajectory being run*, not of the unit.
 
 This directly explains §6.4: any protect set is fit to whatever sequence produced it and is uncorrelated with the demands of a new sequence, so out of distribution it behaves like a random selection of protected units.
 
@@ -151,7 +151,7 @@ EuRoC 5-sequence shortlist, ATE RMSE (m), Sim3 (`results/step1_summary.json`, `2
 
 **All W4 variants collapse.** The TUM-fit geometry set is worst on the mean but mixed per sequence (it beats uniform on MH_01/MH_02); with 5 sequences "geometry is worse" is not supported, but "W4 does not transfer, with or without allocation" is — and §6.3 says why. Note that FP8 is **no longer free** here ($+15.6\%$; MH_01 $+38\%$, V2_01 $+43\%$): the single-sequence V1_01 spot-check that once looked fine ($-7.4\%$) was unrepresentative. Single-dataset compression numbers flatter.
 
-### 6.5 It is signal, not noise
+### 6.5 Signal versus noise
 
 Because seeds carry no variance, we estimate run-to-run noise by perturbing FP16 trunk weights multiplicatively, $w(1+10^{-3}\epsilon)$, $\epsilon\sim\mathcal{N}(0,1)$ — about $20\times$ below FP8 rounding error — over 4 draws (`ptq.py` method=`noise`; `scripts/run_step1_noise_baselines.sh`). The floor is std over {FP16, 4 draws} relative to FP16.
 
@@ -159,7 +159,7 @@ Because seeds carry no variance, we estimate run-to-run noise by perturbing FP16
 - **Per sequence:** most TUM below 1% (desk 0.24%, floor 0.13%, 360 0.65%), EuRoC 0.3–1.9%; **desk2 (6.5%) and teddy (6.1%) are chaotic** and unreliable single-run.
 - **Effect sizes:** 18–47 of 49 units (`loi`) and 28–44 (`loo`) have $|\delta_u| > 2\times$ the sequence's floor (`profile_gate.json`).
 
-**Implications.** (i) The $+15.6\%$ FP8 and all W4 collapses (§6.4) are orders of magnitude above the floor — real. (ii) Most per-unit effects (§6.3) are individually real, yet uncorrelated across sequences: this is genuine sequence-specificity, not measurement scatter. (iii) The desk profile was fit on a *stable* sequence (0.24% floor), so its ranking is trustworthy *for desk* — which makes its failure to transfer all the more pointed. (iv) desk2/teddy should be excluded from any single-run fitting.
+**Implications.** (i) The $+15.6\%$ FP8 cost is about $20\times$ the floor, and the W4 collapses (§6.4) are larger still, so both are real. (ii) Most per-unit effects (§6.3) exceed the floor, yet are uncorrelated across sequences. **Caveat (retest pending):** the floor is measured with a $10^{-3}$ perturbation, far smaller than quantizing a whole unit to W4. If the trajectory responds chaotically to W4-sized changes, a unit's effect could change on a rerun of the *same* sequence. A test-retest run (`scripts/run_profile_retest.sh`: the same quantize-one profile on floor and MH_01 on top of a $10^{-3}$ noise draw, analysed by `scripts/profile_retest.py`) decides between "sequence-specific" (high within-sequence retest correlation) and "not measurable from single runs" (retest correlation near zero). (iii) The desk profile was fit on a *stable* sequence (0.24% floor), so its ranking is trustworthy *for desk* — which makes its failure to transfer all the more pointed. (iv) desk2/teddy should be excluded from any single-run fitting.
 
 ### 6.6 Efficiency: memory yes, fused FP8 latency no
 

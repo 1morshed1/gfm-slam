@@ -473,6 +473,13 @@ def patch_load_mast3r(
         elif method == "noise":
             info = apply_weight_noise(model, scope=scope, rel=noise_rel, seed=noise_seed)
             logical_bits = 16
+        elif method == "noise_units":
+            if not units:
+                raise ValueError("method=noise_units requires units=[...]")
+            noise_info = apply_weight_noise(model, scope=scope, rel=noise_rel, seed=noise_seed)
+            info = apply_int_wo_units(model, set(units), bits=bits)
+            info["noise"] = noise_info
+            logical_bits = bits
         else:
             raise ValueError(method)
         info["logical_mb"] = logical_int_mb(model, scope=scope, bits=logical_bits)

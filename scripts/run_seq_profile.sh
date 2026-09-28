@@ -18,10 +18,15 @@ case "$DSET" in
   euroc) DS="datasets/euroc/$SEQ"; GT="groundtruths/euroc/$SEQ.txt" ;;
   *) echo "unknown DSET=$DSET"; exit 1 ;;
 esac
-case "$MEASURE" in loi|loo) ;; *) echo "unknown MEASURE=$MEASURE"; exit 1 ;; esac
+case "$MEASURE" in
+  loi|loo) MTAG="$MEASURE" ;;
+  # retest: loi on top of FP16 weight-noise draw NOISE_SEED (rel 1e-3) -> compare to that noise draw
+  loin) MTAG="loin${NOISE_SEED:?NOISE_SEED required}" ;;
+  *) echo "unknown MEASURE=$MEASURE"; exit 1 ;;
+esac
 
 mkdir -p "$RESULTS/profiles"
-ATE_FILE="$RESULTS/profiles/profile_${MEASURE}_${SEQ}.txt"
+ATE_FILE="$RESULTS/profiles/profile_${MTAG}_${SEQ}.txt"
 : > "$ATE_FILE"
 
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-1}"
@@ -45,7 +50,7 @@ mapfile -t UNITS < <(cut -f1 "$RESULTS/sens_w4_full_units.txt" | grep -v downstr
 echo "PROFILE $DSET $SEQ $MEASURE units=${#UNITS[@]} gpu=$CUDA_VISIBLE_DEVICES"
 
 for unit in "${UNITS[@]}"; do
-  save="profile/${MEASURE}/${SEQ}/${unit//./_}"
+  save="profile/${MTAG}/${SEQ}/${unit//./_}"
   traj="logs/$save/$SEQ.txt"
   if [ ! -f "$traj" ]; then
     python - <<PY
@@ -54,6 +59,9 @@ sys.path.insert(0, "$ROOT/scripts")
 from ptq import patch_load_mast3r
 if "$MEASURE" == "loi":
     patch_load_mast3r(method="fake_units", bits=4, units=["$unit"])
+elif "$MEASURE" == "loin":
+    patch_load_mast3r(method="noise_units", bits=4, units=["$unit"],
+                      noise_rel=1e-3, noise_seed=int("${NOISE_SEED:-0}"))
 else:
     patch_load_mast3r(method="fake_except", bits=4, protect=["$unit"])
 import runpy
