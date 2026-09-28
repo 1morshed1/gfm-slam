@@ -1,0 +1,22 @@
+{
+  "rgbd_dataset_freiburg1_floor|loi_vs_loin1": {
+    "rho": 0.9073190645570867,
+    "n_units": 49,
+    "top7_overlap": 6
+  },
+  "rgbd_dataset_freiburg1_floor|loi_vs_loin2": {
+    "rho": 0.9093877551020407,
+    "n_units": 49,
+    "top7_overlap": 5
+  },
+  "rgbd_dataset_freiburg1_floor|loin1_vs_loin2": {
+    "rho": 0.9235439682588891,
+    "n_units": 49,
+    "top7_overlap": 6
+  },
+  "MH_01_easy|loi_vs_loin1": {
+    "rho": 0.7238775510204081,
+    "n_units": 49,
+    "top7_overlap": 6
+  }
+}

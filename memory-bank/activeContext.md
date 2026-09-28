@@ -38,6 +38,10 @@ Pre-registered design (user-approved, 2026-09-27):
 - Reading: closed-loop per-unit ATE sensitivity is not a stable property of a unit; the trajectory responds to W4-scale perturbations chaotically. `results/profile_gate.json`, `results/profiles/`.
 - Ops: capping `OMP_NUM_THREADS=12` per stream gives identical ATE (verified on TUM floor, FP16 + uniform W4) and cut host load from ~200 to ~20 (48 cores). GPU-1 went from 1% to 88% utilization.
 
+### Test-retest (2026-09-28): profiles reproduce within a sequence
+- Quantize-one profile re-measured on top of 1e-3 noise draws (flips some W4 rounding): floor orig vs n1 / n2 / n1-vs-n2 Spearman +0.91 / +0.91 / +0.92; MH_01 orig vs n1 +0.72. Top-7 overlap 5–6/7. Cross-sequence was +0.01.
+- ⇒ "sequence-specific, not noise" holds; title and main claim stand. Manuscript §6.5, contribution 3 and the abstract updated. `results/profile_retest.json`.
+
 ## Next action
 1. **DONE (2026-09-28):** manuscript rewritten as a negative-result / empirical paper, committed on `main`. New spine = per-unit sensitivity does not transfer (§6.3, main result); supporting = TUM allocation not significant (§6.2), W4 collapses on EuRoC under any allocation (§6.4), noise floor proves signal-not-noise (§6.5), FP8 flatters on one dataset (§6.4), deterministic-SLAM methodology (§5/§6.5). New title; venue = workshop / short empirical.
 2. Optional next: regenerate figures for the negative-result framing (sensitivity heatmap across sequences showing rank disagreement; per-unit rank-scatter TUM vs EuRoC). No GPU needed — plots from committed `results/profiles/` + `profile_gate.json`.
