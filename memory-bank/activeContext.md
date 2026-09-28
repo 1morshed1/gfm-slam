@@ -39,7 +39,9 @@ Pre-registered design (user-approved, 2026-09-27):
 - Ops: capping `OMP_NUM_THREADS=12` per stream gives identical ATE (verified on TUM floor, FP16 + uniform W4) and cut host load from ~200 to ~20 (48 cores). GPU-1 went from 1% to 88% utilization.
 
 ## Next action
-1. Per pre-registration: **negative-result workshop paper**. Rewrite the manuscript around the findings (not significant within TUM; W4 does not transfer under any allocation; per-unit sensitivity profiles do not agree across sequences; FP8 cost on EuRoC; methodology: seeds ≠ noise, use sequence bootstrap plus a perturbation floor). Awaiting user go-ahead.
+1. **DONE (2026-09-28):** manuscript rewritten as a negative-result / empirical paper, committed on `main`. New spine = per-unit sensitivity does not transfer (§6.3, main result); supporting = TUM allocation not significant (§6.2), W4 collapses on EuRoC under any allocation (§6.4), noise floor proves signal-not-noise (§6.5), FP8 flatters on one dataset (§6.4), deterministic-SLAM methodology (§5/§6.5). New title; venue = workshop / short empirical.
+2. Optional next: regenerate figures for the negative-result framing (sensitivity heatmap across sequences showing rank disagreement; per-unit rank-scatter TUM vs EuRoC). No GPU needed — plots from committed `results/profiles/` + `profile_gate.json`.
+3. Venue reframe + author list.
 
 ## Gate ledger
 - [x] eval_ate.py implemented
@@ -48,5 +50,6 @@ Pre-registered design (user-approved, 2026-09-27):
 - [x] Perturbation noise floor
 - [x] All 11 EuRoC seqs extracted (`data/euroc/`, symlinked into `ext/MASt3R-SLAM/datasets/euroc/`)
 - [x] Rescue Stage A pilot + gate — **FAIL** (Stage B not run)
-- [ ] Negative-result manuscript rewrite
-- [ ] Venue reframe (after gate)
+- [x] Negative-result manuscript rewrite (committed on main 2026-09-28)
+- [ ] Figures for negative-result framing
+- [ ] Venue reframe + author list
